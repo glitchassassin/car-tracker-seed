@@ -1,11 +1,3 @@
-> [!NOTE] If you are asked to generate this Implementation Plan, do so in steps.
->
-> 1. Propose a list of Phases for the user to review.
-> 2. When the user approves the Phases, break down tasks for each phase,
->    including concrete acceptance criteria.
->
-> When the implementation plan is complete, you may remove this note.
-
 # Implementation Plan
 
 Tackle these tasks, one at a time, and check them off when complete. Make sure
@@ -17,7 +9,7 @@ some of the criteria aren't testable.
 Set up the core application structure, database schema, and data management
 capabilities. This phase establishes the foundation for all subsequent features.
 
-### [ ] Set up D1 database and schema
+### [x] Set up D1 database and schema
 
 Configure Cloudflare D1 database with the car tracking schema.
 
@@ -26,14 +18,11 @@ No e2e test needed here
 **Acceptance Criteria:**
 
 - D1 database binding is configured in `wrangler.jsonc`
-- Database schema includes `cars` table with all required fields (id, make,
-  model, color, license_plate, status, created_at, updated_at)
-- Database schema includes `status_history` table for tracking status changes
-  with timestamps
+- Database schema includes `cars` table with all required fields
 - Migration script exists to create the database schema
 - Database connection works in both local development and deployed environments
 
-### [ ] Create data import/export utilities
+### [x] Create data import/export utilities
 
 Build scripts to manage car data for pre-event setup.
 
@@ -48,7 +37,7 @@ No e2e test needed here
 - Import script validates data format and handles errors gracefully
 - Export script can dump current database state to CSV for backup
 
-### [ ] Create global setup/teardown scripts for Playwright
+### [x] Create global setup/teardown scripts for Playwright
 
 Load and clear sample data into the local database with the previously-created
 import/export utilities
@@ -59,7 +48,7 @@ import/export utilities
 - Teardown script deletes test data from the local database
 - existing e2e tests run without failing (no need to create a new one)
 
-### [ ] Implement basic car data operations
+### [x] Implement basic car data operations
 
 Create foundational data access layer for car management.
 

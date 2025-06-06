@@ -43,6 +43,18 @@
 	// "assets": { "directory": "./public/", "binding": "ASSETS" },
 
 	/**
+	 * D1 Database
+	 * https://developers.cloudflare.com/d1/
+	 */
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "car-tracker-db",
+			"database_id": "a58c6693-e543-4d92-827f-4ff9304ae5a6",
+		},
+	],
+
+	/**
 	 * Service Bindings (communicate between multiple Workers)
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
 	 */

@@ -5,17 +5,15 @@ alwaysApply: true
 ---
 This app is built with React Router 7 on Cloudflare Workers.
 
-## Feature Development
-
-Follow this to-do list for every feature:
-
-1. Write concise and thorough human-readable test scenarios to docs/tests/{feature}.md, and have the user review
-2. Implement the feature
-3. Write e2e tests that follow the defined test scenarios, include Axe accessibility checking for any new pages
-
 ## End-to-End Tests
 
-The app uses Playwright for e2e tests. When implementing a feature, write concise e2e tests that check the feature's acceptance criteria. Prefer to combine tests that cover the same path through the app. Write tests that cover the feature's "happy path" as well as error scenarios.
+Always run e2e tests with `--reporter=line` so Playwright doesn't interrupt you by trying to serve HTML.
+
+Write thorough human-readable test scenarios to docs/tests/{feature}.md, then STOP and have the user approve them before continuing.
+
+Run the existing e2e tests first, and fix them if they fail.
+
+Then, Write a few thorough e2e tests that cover the natural "flow" through the application. Don't test individual units of functionality: e2e tests run slowly, so we want to have as few as possible while covering the important features. Remember to check accessibility with Axe on new pages.
 
 ## Components
 
@@ -24,3 +22,10 @@ Wherever it makes sense, extract reusable components into app/components. This h
 ## Working with React Router
 
 Lean into React Router's use of loaders and Form actions for reading and mutating data. Prefer HTML/CSS standards rather than Javascript, where the standards provide equivalent functionality.
+
+Use the React Router fs-routes format:
+- "routes/foo.bar.baz/route.tsx" maps to "/foo/bar/baz"
+- "routes/foo._index/route.tsx" maps to "/foo"
+- "routes/foo/route.tsx" is a layout route shared by all routes that start with "/foo"
+- "routes/_base/route.tsx" defines a layout route that applies to all route folders that start with "_base", but doesn't change the URL
+- "routes/_base.baz/route.tsx" maps to "/baz" but uses the layout from routes/_base/route.tsx

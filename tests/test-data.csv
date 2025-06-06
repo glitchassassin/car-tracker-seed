@@ -1,0 +1,11 @@
+id,make,model,color,license_plate
+1,"Toyota","Camry","White","ABC1234"
+2,"Honda","Civic","Blue","DEF5678"
+3,"Ford","F-150","Black","GHI9012"
+4,"Chevrolet","Malibu","Red","JKL3456"
+5,"Nissan","Altima","Silver","MNO7890"
+6,"Hyundai","Elantra","Gray","PQR1234"
+7,"Subaru","Outback","Green","STU5678"
+8,"Mazda","CX-5","Yellow","VWX9012"
+9,"Volkswagen","Jetta","Purple","YZA3456"
+10,"BMW","3 Series","Gold","BCD7890" 
