@@ -20,3 +20,7 @@ The app uses Playwright for e2e tests. When implementing a feature, write concis
 ## Components
 
 Wherever it makes sense, extract reusable components into app/components. This helps us standardize functionality as well as the look & feel of the app.
+
+## Working with React Router
+
+Lean into React Router's use of loaders and Form actions for reading and mutating data. Prefer HTML/CSS standards rather than Javascript, where the standards provide equivalent functionality.
