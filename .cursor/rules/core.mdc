@@ -24,3 +24,5 @@ Wherever it makes sense, extract reusable components into app/components. This h
 Lean into React Router's use of loaders and Form actions for reading and mutating data. Prefer HTML/CSS standards rather than Javascript, where the standards provide equivalent functionality.
 
 Routes are defined in [routes.ts](mdc:app/routes.ts).
+
+React Router route types look like a relative import, but they are actually mapped to the .react-router/ directory. To regenerate types, just make sure the dev server is running with `npm run dev`, then run typecheck to make sure they were generated correctly.
