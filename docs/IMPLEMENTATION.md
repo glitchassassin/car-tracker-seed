@@ -70,6 +70,17 @@ with mobile-optimized volunteer interfaces. This combines the core business
 logic with the user interfaces needed to test and validate the status tracking
 system.
 
+Create shared components that can be reused across multiple screens.
+
+### [ ] Build Index
+
+Create mobile-optimized interface for selecting volunteer role
+
+**Acceptance Criteria:**
+
+- Route `/` displays nav to each Volunteer landing page
+- Large, touch-friendly buttons
+
 ### [ ] Build Registration Volunteer interface
 
 Create mobile-optimized interface for car check-in.
@@ -78,7 +89,10 @@ Create mobile-optimized interface for car check-in.
 
 - Route `/registration` displays Registration Volunteer landing page
 - Car lookup by ID with large, touch-friendly number input
-- Car details display showing make/model/color/license plate for verification
+- Queue view showing all cars with PRE_ARRIVAL status, links to verification
+  route
+- Route `/registration/$carId` displays car details including
+  make/model/color/license plate for verification
 - "Register Car" button transitions car from PRE_ARRIVAL to REGISTERED status
 - "Not a Match" button provides pop-up instructions to escalate/report mismatch
 - Success feedback confirms registration completion
@@ -92,8 +106,10 @@ Create interface for managing cars in the service queue.
 
 - Route `/floor` displays Floor Volunteer landing page
 - Car lookup by ID functionality
-- Queue view showing all cars with REGISTERED status
-- Car selection from queue with car details verification
+- Queue view showing all cars with REGISTERED status, links to verification
+  route
+- Route `/floor/$carId` displays car details including make/model/color/license
+  plate for verification
 - "Start Service" button transitions car from REGISTERED to ON_DECK status
 - "Not a Match" button provides pop-up instructions to escalate/report mismatch
 - Mobile-optimized layout with large touch targets
@@ -107,23 +123,12 @@ Create interface for completing the service process.
 
 - Route `/handoff` displays Handoff Volunteer landing page
 - Car lookup by ID functionality
-- Queue view showing all cars with ON_DECK status
-- Car selection from queue with car details verification
+- Queue view showing all cars with ON_DECK status, links to verification route
+- Route `/handoff/$carId` displays car details including
+  make/model/color/license plate for verification
 - "Ready for Pickup" button transitions car from ON_DECK to DONE status
 - Mobile-optimized layout with large touch targets
 - Clear visual feedback for status changes
-
-### [ ] Implement Actions to update car status
-
-Create React Router 7 actions for handling status updates.
-
-**Acceptance Criteria:**
-
-- Action handles car status transitions with proper validation
-- Actions return appropriate success/error responses
-- Actions trigger automatic revalidation of affected data
-- Actions work with both optimistic UI updates and server confirmation
-- Error handling provides user-friendly messages for failed updates
 
 ## Phase 3: Real-time Updates & Public Display
 

@@ -9,11 +9,11 @@ This app is built with React Router 7 on Cloudflare Workers.
 
 Always run e2e tests with `--reporter=line` so Playwright doesn't interrupt you by trying to serve HTML.
 
-Write thorough human-readable test scenarios to docs/tests/{feature}.md, then STOP and have the user approve them before continuing.
-
 Run the existing e2e tests first, and fix them if they fail.
 
 Then, Write a few thorough e2e tests that cover the natural "flow" through the application. Don't test individual units of functionality: e2e tests run slowly, so we want to have as few as possible while covering the important features. Remember to check accessibility with Axe on new pages.
+
+Note that test data is NOT reset between runs, so you MUST be careful to use different test data in each test. Another good reason to minimize the number of e2e tests you write.
 
 ## Components
 
@@ -23,9 +23,4 @@ Wherever it makes sense, extract reusable components into app/components. This h
 
 Lean into React Router's use of loaders and Form actions for reading and mutating data. Prefer HTML/CSS standards rather than Javascript, where the standards provide equivalent functionality.
 
-Use the React Router fs-routes format:
-- "routes/foo.bar.baz/route.tsx" maps to "/foo/bar/baz"
-- "routes/foo._index/route.tsx" maps to "/foo"
-- "routes/foo/route.tsx" is a layout route shared by all routes that start with "/foo"
-- "routes/_base/route.tsx" defines a layout route that applies to all route folders that start with "_base", but doesn't change the URL
-- "routes/_base.baz/route.tsx" maps to "/baz" but uses the layout from routes/_base/route.tsx
+Routes are defined in [routes.ts](mdc:app/routes.ts).
