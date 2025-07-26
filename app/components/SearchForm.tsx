@@ -10,14 +10,15 @@ export function SearchForm({
 	buttonText = 'Search',
 }: SearchFormProps) {
 	return (
-		<Form method="get" className="space-y-4">
+		<Form method="post" className="space-y-4">
 			<div className="flex gap-2">
 				<input
 					type="number"
-					name="search"
+					name="carId"
 					placeholder={placeholder}
 					className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-lg focus:border-transparent focus:ring-2 focus:ring-blue-500"
 					min="1"
+					required
 				/>
 				<button
 					type="submit"

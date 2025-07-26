@@ -51,6 +51,14 @@ export default function FloorDetail({ loaderData }: Route.ComponentProps) {
 		<main className="min-h-screen p-4">
 			<div className="mx-auto max-w-2xl space-y-8">
 				<header className="text-center">
+					<div className="mb-4 flex justify-start">
+						<a
+							href="/floor"
+							className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
+						>
+							← Back to Floor
+						</a>
+					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">
 						Car #{car.id} Details
 					</h1>
@@ -115,16 +123,6 @@ export default function FloorDetail({ loaderData }: Route.ComponentProps) {
 						</button>
 					</form>
 				</section>
-
-				{/* Back to Floor */}
-				<div className="text-center">
-					<a
-						href="/floor"
-						className="inline-block rounded-lg bg-gray-100 px-6 py-3 text-lg font-semibold text-gray-700 transition-colors hover:bg-gray-200"
-					>
-						Back to Floor
-					</a>
-				</div>
 			</div>
 		</main>
 	)

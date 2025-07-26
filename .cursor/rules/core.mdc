@@ -1,28 +1,41 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
+
 This app is built with React Router 7 on Cloudflare Workers.
 
 ## End-to-End Tests
 
-Always run e2e tests with `--reporter=line` so Playwright doesn't interrupt you by trying to serve HTML.
+Always run tests with `npm run test:e2e` so Playwright doesn't interrupt you by
+trying to serve HTML.
 
 Run the existing e2e tests first, and fix them if they fail.
 
-Then, Write a few thorough e2e tests that cover the natural "flow" through the application. Don't test individual units of functionality: e2e tests run slowly, so we want to have as few as possible while covering the important features. Remember to check accessibility with Axe on new pages.
+Then, Write a few thorough e2e tests that cover the natural "flow" through the
+application. Don't test individual units of functionality: e2e tests run slowly,
+so we want to have as few as possible while covering the important features.
+Remember to check accessibility with Axe on new pages.
 
-Note that test data is NOT reset between runs, so you MUST be careful to use different test data in each test. Another good reason to minimize the number of e2e tests you write.
+Note that test data is NOT reset between runs, so you MUST be careful to use
+different test data in each test. Another good reason to minimize the number of
+e2e tests you write.
 
 ## Components
 
-Wherever it makes sense, extract reusable components into app/components. This helps us standardize functionality as well as the look & feel of the app.
+Wherever it makes sense, extract reusable components into app/components. This
+helps us standardize functionality as well as the look & feel of the app.
 
 ## Working with React Router
 
-Lean into React Router's use of loaders and Form actions for reading and mutating data. Prefer HTML/CSS standards rather than Javascript, where the standards provide equivalent functionality.
+Lean into React Router's use of loaders and Form actions for reading and
+mutating data. Prefer HTML/CSS standards rather than Javascript, where the
+standards provide equivalent functionality.
 
 Routes are defined in [routes.ts](mdc:app/routes.ts).
 
-React Router route types look like a relative import, but they are actually mapped to the .react-router/ directory. To regenerate types, just make sure the dev server is running with `npm run dev`, then run typecheck to make sure they were generated correctly.
+React Router route types look like a relative import, but they are actually
+mapped to the .react-router/ directory. To regenerate types, just make sure the
+dev server is running with `npm run dev`, then run typecheck to make sure they
+were generated correctly.

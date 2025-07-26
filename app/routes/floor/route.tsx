@@ -1,3 +1,4 @@
+import { redirect } from 'react-router'
 import { CarCard } from '../../components/CarCard'
 import { SearchForm } from '../../components/SearchForm'
 import { createCarDB } from '../../lib/car-db'
@@ -13,35 +14,47 @@ export function meta({}: Route.MetaArgs) {
 	]
 }
 
-export async function loader({ context, request }: Route.LoaderArgs) {
-	const carDB = createCarDB(context.cloudflare.env)
-	const url = new URL(request.url)
-	const searchId = url.searchParams.get('search')
+export async function action({ request }: Route.ActionArgs) {
+	const formData = await request.formData()
+	const carId = formData.get('carId')
 
-	let searchResult = null
-	if (searchId) {
-		const carId = parseInt(searchId, 10)
-		if (!isNaN(carId)) {
-			searchResult = await carDB.getCarById(carId)
-		}
+	if (!carId || typeof carId !== 'string') {
+		throw new Error('Car ID is required')
 	}
 
+	const parsedCarId = parseInt(carId, 10)
+	if (isNaN(parsedCarId)) {
+		throw new Error('Invalid car ID')
+	}
+
+	// Redirect to the car detail page
+	return redirect(`/floor/${parsedCarId}`)
+}
+
+export async function loader({ context }: Route.LoaderArgs) {
+	const carDB = createCarDB(context.cloudflare.env)
 	const registeredCars = await carDB.getCarsByStatus('REGISTERED')
 
 	return {
-		searchResult,
 		registeredCars,
-		searchId,
 	}
 }
 
 export default function Floor({ loaderData }: Route.ComponentProps) {
-	const { searchResult, registeredCars, searchId } = loaderData
+	const { registeredCars } = loaderData
 
 	return (
 		<main className="min-h-screen p-4">
 			<div className="mx-auto max-w-4xl space-y-8">
 				<header className="text-center">
+					<div className="mb-4 flex justify-start">
+						<a
+							href="/"
+							className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
+						>
+							← Back to Home
+						</a>
+					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">Floor</h1>
 					<p className="text-gray-600">Start service on registered cars</p>
 				</header>
@@ -50,30 +63,6 @@ export default function Floor({ loaderData }: Route.ComponentProps) {
 				<section className="space-y-4">
 					<h2 className="text-xl font-semibold text-gray-900">Look Up Car</h2>
 					<SearchForm placeholder="Enter car ID..." />
-
-					{searchResult && (
-						<div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
-							<h3 className="mb-2 font-semibold text-green-900">
-								Found Car #{searchResult.id}
-							</h3>
-							<p className="text-green-800">
-								{searchResult.make} {searchResult.model} • {searchResult.color}{' '}
-								• {searchResult.license_plate}
-							</p>
-							<a
-								href={`/floor/${searchResult.id}`}
-								className="mt-2 inline-block rounded bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
-							>
-								View Details
-							</a>
-						</div>
-					)}
-
-					{searchId && !searchResult && (
-						<div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
-							<p className="text-red-800">No car found with ID {searchId}</p>
-						</div>
-					)}
 				</section>
 
 				{/* Queue Section */}
@@ -94,16 +83,6 @@ export default function Floor({ loaderData }: Route.ComponentProps) {
 						</div>
 					)}
 				</section>
-
-				{/* Back to Home */}
-				<div className="text-center">
-					<a
-						href="/"
-						className="inline-block rounded-lg bg-gray-100 px-6 py-3 text-lg font-semibold text-gray-700 transition-colors hover:bg-gray-200"
-					>
-						Back to Home
-					</a>
-				</div>
 			</div>
 		</main>
 	)

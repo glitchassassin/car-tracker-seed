@@ -137,8 +137,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
-			// Navigate to details page from search results
-			await page.getByRole('link', { name: /view details/i }).click()
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/registration/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
@@ -161,8 +161,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
-			// Navigate to details page from search results
-			await page.getByRole('link', { name: /view details/i }).click()
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/floor/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
@@ -185,8 +185,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
-			// Navigate to details page from search results
-			await page.getByRole('link', { name: /view details/i }).click()
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/handoff/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
@@ -252,8 +252,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByPlaceholder(/enter car id/i).fill(carId1.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
-			// Navigate to details page from search results
-			await page.getByRole('link', { name: /view details/i }).click()
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/floor/${carId1}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Ford')).toBeVisible()
@@ -277,8 +277,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByPlaceholder(/enter car id/i).fill(carId2.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
-			// Navigate to details page from search results
-			await page.getByRole('link', { name: /view details/i }).click()
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/handoff/${carId2}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Nissan')).toBeVisible()
@@ -342,7 +342,6 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Search for the created car by ID to navigate to details page
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
-			await page.getByRole('link', { name: /view details/i }).click()
 
 			// Check accessibility with Axe
 			const registrationDetailsAccessibilityScanResults = await new AxeBuilder({
@@ -364,7 +363,6 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Search for the created car by ID to navigate to details page
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
-			await page.getByRole('link', { name: /view details/i }).click()
 
 			// Check accessibility with Axe
 			const floorDetailsAccessibilityScanResults = await new AxeBuilder({
@@ -386,7 +384,6 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Search for the created car by ID to navigate to details page
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
-			await page.getByRole('link', { name: /view details/i }).click()
 
 			// Check accessibility with Axe
 			const handoffDetailsAccessibilityScanResults = await new AxeBuilder({
