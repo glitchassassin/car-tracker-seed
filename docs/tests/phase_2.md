@@ -9,7 +9,10 @@ validate the natural user experience rather than individual components.
 
 Each test creates its own test data using the helper functions in
 `tests/helpers/cars.ts` to ensure test isolation and avoid dependencies on
-pre-existing data.
+pre-existing data. Assume that there will be other data in the system from other
+tests, and use test-ids such as "car-1234" for blocks such as cards with data
+specific to a given car. Don't overuse test-ids, however: prefer to match by
+role and text where possible.
 
 ## Test Plan 1: Car Journey Flow via Queues
 

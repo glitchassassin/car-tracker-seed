@@ -41,7 +41,7 @@ test.describe('Test Hooks - Car Management', () => {
 
 		// Step 4: Verify our test car no longer exists by checking specifically for it
 		const deletedCar = await getCarById(page, createdCar.id)
-		expect(deletedCar).toBeUndefined()
+		expect(deletedCar).toBeNull()
 		console.log(`Verified car no longer exists: ID ${createdCar.id}`)
 	})
 
