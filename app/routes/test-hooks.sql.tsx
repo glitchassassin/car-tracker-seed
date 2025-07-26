@@ -1,5 +1,7 @@
+import { parseWithZod } from '@conform-to/zod'
 import type { ActionFunctionArgs } from 'react-router'
 import { data } from 'react-router'
+import { sqlQuerySchema } from '../lib/validation'
 
 export async function action({ request, context }: ActionFunctionArgs) {
 	if (import.meta.env.MODE !== 'development') {
@@ -7,17 +9,22 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	}
 
 	const formData = await request.formData()
-	const query = formData.get('query')
+	const submission = parseWithZod(formData, { schema: sqlQuerySchema })
 
-	if (!query || typeof query !== 'string') {
+	if (submission.status !== 'success') {
 		return data(
-			{ success: false as const, error: 'Missing or invalid query parameter' },
+			{
+				success: false as const,
+				error: submission.error?.query?.[0] || 'Invalid query parameter',
+			},
 			{
 				status: 400,
 				headers: { 'Content-Type': 'application/json' },
 			},
 		)
 	}
+
+	const { query } = submission.value
 
 	try {
 		// Execute the raw SQL query

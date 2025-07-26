@@ -47,8 +47,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Civic')).toBeVisible()
 			await expect(page.getByText('Blue')).toBeVisible()
 
-			// Click "Register Car" button
-			await page.getByRole('button', { name: /register car/i }).click()
+			// Click "Move to Registered" button
+			await page.getByRole('button', { name: /move to registered/i }).click()
 
 			// Verify user is automatically redirected to /registration
 			await expect(page).toHaveURL('/registration')
@@ -70,8 +70,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Civic')).toBeVisible()
 			await expect(page.getByText('Blue')).toBeVisible()
 
-			// Click "Start Service" button
-			await page.getByRole('button', { name: /start service/i }).click()
+			// Click "Move to On Deck" button
+			await page.getByRole('button', { name: /move to on deck/i }).click()
 
 			// Verify user is automatically redirected to /floor
 			await expect(page).toHaveURL('/floor')
@@ -93,8 +93,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Civic')).toBeVisible()
 			await expect(page.getByText('Blue')).toBeVisible()
 
-			// Click "Ready for Pickup" button
-			await page.getByRole('button', { name: /ready for pickup/i }).click()
+			// Click "Move to Done" button
+			await page.getByRole('button', { name: /move to done/i }).click()
 
 			// Verify user is automatically redirected to /handoff
 			await expect(page).toHaveURL('/handoff')
@@ -138,15 +138,15 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/registration/${carId}`)
+			await expect(page).toHaveURL(`/status/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
 			await expect(page.getByText('Silver')).toBeVisible()
 
-			// Click "Register Car" button
-			await page.getByRole('button', { name: /register car/i }).click()
+			// Click "Move to Registered" button
+			await page.getByRole('button', { name: /move to registered/i }).click()
 
 			// Verify user is automatically redirected to /registration
 			await expect(page).toHaveURL('/registration')
@@ -162,15 +162,15 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/floor/${carId}`)
+			await expect(page).toHaveURL(`/status/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
 			await expect(page.getByText('Silver')).toBeVisible()
 
-			// Click "Start Service" button
-			await page.getByRole('button', { name: /start service/i }).click()
+			// Click "Move to On Deck" button
+			await page.getByRole('button', { name: /move to on deck/i }).click()
 
 			// Verify user is automatically redirected to /floor
 			await expect(page).toHaveURL('/floor')
@@ -186,15 +186,15 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/handoff/${carId}`)
+			await expect(page).toHaveURL(`/status/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
 			await expect(page.getByText('Silver')).toBeVisible()
 
-			// Click "Ready for Pickup" button
-			await page.getByRole('button', { name: /ready for pickup/i }).click()
+			// Click "Move to Done" button
+			await page.getByRole('button', { name: /move to done/i }).click()
 
 			// Verify user is automatically redirected to /handoff
 			await expect(page).toHaveURL('/handoff')
@@ -253,15 +253,18 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/floor/${carId1}`)
+			await expect(page).toHaveURL(`/status/${carId1}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Ford')).toBeVisible()
 			await expect(page.getByText('Focus')).toBeVisible()
-			await expect(page.getByText('Red')).toBeVisible()
+			// Use a more specific selector to avoid conflict with button text
+			await expect(
+				page.locator('p.text-lg.text-gray-900').filter({ hasText: 'Red' }),
+			).toBeVisible()
 
-			// Click "Start Service" button
-			await page.getByRole('button', { name: /start service/i }).click()
+			// Click "Skip to On Deck" button (since car is in PRE_ARRIVAL status)
+			await page.getByRole('button', { name: /skip to on deck/i }).click()
 
 			// Verify user is automatically redirected to /floor
 			await expect(page).toHaveURL('/floor')
@@ -278,15 +281,15 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/handoff/${carId2}`)
+			await expect(page).toHaveURL(`/status/${carId2}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Nissan')).toBeVisible()
 			await expect(page.getByText('Altima')).toBeVisible()
 			await expect(page.getByText('Black')).toBeVisible()
 
-			// Click "Ready for Pickup" button
-			await page.getByRole('button', { name: /ready for pickup/i }).click()
+			// Click "Skip to Done" button (since car is in PRE_ARRIVAL status)
+			await page.getByRole('button', { name: /skip to done/i }).click()
 
 			// Verify user is automatically redirected to /handoff
 			await expect(page).toHaveURL('/handoff')

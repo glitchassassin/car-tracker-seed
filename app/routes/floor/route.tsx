@@ -1,7 +1,9 @@
+import { parseWithZod } from '@conform-to/zod'
 import { redirect } from 'react-router'
 import { CarCard } from '../../components/CarCard'
 import { SearchForm } from '../../components/SearchForm'
 import { createCarDB } from '../../lib/car-db'
+import { carLookupSchema } from '../../lib/validation'
 import type { Route } from './+types/route'
 
 export function meta({}: Route.MetaArgs) {
@@ -16,19 +18,14 @@ export function meta({}: Route.MetaArgs) {
 
 export async function action({ request }: Route.ActionArgs) {
 	const formData = await request.formData()
-	const carId = formData.get('carId')
+	const submission = parseWithZod(formData, { schema: carLookupSchema })
 
-	if (!carId || typeof carId !== 'string') {
-		throw new Error('Car ID is required')
+	if (submission.status !== 'success') {
+		return submission.reply()
 	}
 
-	const parsedCarId = parseInt(carId, 10)
-	if (isNaN(parsedCarId)) {
-		throw new Error('Invalid car ID')
-	}
-
-	// Redirect to the car detail page
-	return redirect(`/floor/${parsedCarId}`)
+	// Redirect to the unified status page
+	return redirect(`/status/${submission.value.carId}`)
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -78,7 +75,7 @@ export default function Floor({ loaderData }: Route.ComponentProps) {
 					) : (
 						<div className="space-y-3">
 							{registeredCars.map((car) => (
-								<CarCard key={car.id} car={car} href={`/floor/${car.id}`} />
+								<CarCard key={car.id} car={car} href={`/status/${car.id}`} />
 							))}
 						</div>
 					)}
