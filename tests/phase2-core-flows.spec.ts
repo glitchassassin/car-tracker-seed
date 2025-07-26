@@ -56,7 +56,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.goto('/')
 
 			// Select Floor mode
-			await page.getByRole('link', { name: /floor/i }).click()
+			await page.getByRole('link', { name: /At the floor entrance/i }).click()
 
 			// Verify the created car appears in REGISTERED queue
 			await expect(page.getByTestId(`car-${carId}`)).toBeVisible()
@@ -78,7 +78,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.goto('/')
 
 			// Select Handoff mode
-			await page.getByRole('link', { name: /handoff/i }).click()
+			await page.getByRole('link', { name: /At the floor exit/i }).click()
 
 			// Verify the created car appears in ON_DECK queue
 			await expect(page.getByTestId(`car-${carId}`)).toBeVisible()
@@ -151,7 +151,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.goto('/')
 
 			// Select Floor mode
-			await page.getByRole('link', { name: /floor/i }).click()
+			await page.getByRole('link', { name: /At the floor entrance/i }).click()
 
 			// Search for the created car by ID
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
@@ -174,7 +174,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.goto('/')
 
 			// Select Handoff mode
-			await page.getByRole('link', { name: /handoff/i }).click()
+			await page.getByRole('link', { name: /At the floor exit/i }).click()
 
 			// Search for the created car by ID
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())

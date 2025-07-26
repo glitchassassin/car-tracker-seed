@@ -19,7 +19,9 @@ test.describe('Home Page', () => {
 
 		// Check that all three volunteer role buttons are present
 		await expect(page.getByRole('link', { name: 'Registration' })).toBeVisible()
-		await expect(page.getByRole('link', { name: 'Floor' })).toBeVisible()
+		await expect(
+			page.getByRole('link', { name: /At the floor entrance/i }),
+		).toBeVisible()
 		await expect(page.getByRole('link', { name: 'Handoff' })).toBeVisible()
 
 		// Verify that the page has loaded completely by checking the main content area
@@ -38,7 +40,7 @@ test.describe('Home Page', () => {
 		await expect(registrationLink).toHaveAttribute('href', '/registration')
 
 		// Test Floor link
-		const floorLink = page.getByRole('link', { name: 'Floor' })
+		const floorLink = page.getByRole('link', { name: /At the floor entrance/i })
 		await expect(floorLink).toHaveAttribute('href', '/floor')
 
 		// Test Handoff link
