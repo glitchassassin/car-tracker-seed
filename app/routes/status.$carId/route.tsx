@@ -240,7 +240,7 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 						<h2
 							className={`text-xl font-semibold ${COLOR_CLASSES[car.color].text}`}
 						>
-							Vehicle Information
+							Vehicle
 						</h2>
 						<div
 							className={`inline-flex items-center rounded-full px-4 py-2 ${statusInfo.bgColor}`}
