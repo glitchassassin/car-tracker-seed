@@ -22,23 +22,26 @@ export default function Home() {
 				<nav className="space-y-4">
 					<a
 						href="/registration"
-						className="block flex min-h-[60px] w-full items-center justify-center rounded-lg bg-blue-600 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-blue-700"
+						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-blue-600 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-blue-700"
 					>
-						Registration
+						<div>Registration</div>
+						<div className="text-sm">At registration table</div>
 					</a>
 
 					<a
 						href="/floor"
-						className="block flex min-h-[60px] w-full items-center justify-center rounded-lg bg-green-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-green-800"
+						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-green-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-green-800"
 					>
-						Floor
+						<div>Floor</div>
+						<div className="text-sm">At the floor entrance</div>
 					</a>
 
 					<a
 						href="/handoff"
-						className="block flex min-h-[60px] w-full items-center justify-center rounded-lg bg-orange-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-orange-800"
+						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-orange-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-orange-800"
 					>
-						Handoff
+						<div>Handoff</div>
+						<div className="text-sm">At the floor exit</div>
 					</a>
 				</nav>
 			</div>

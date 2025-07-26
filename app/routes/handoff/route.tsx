@@ -53,7 +53,10 @@ export default function Handoff({ loaderData }: Route.ComponentProps) {
 						</a>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">Handoff</h1>
-					<p className="text-gray-600">Complete service and hand off cars</p>
+					<p className="text-gray-600">
+						Update car to Done when it is complete and ready to hand off to the
+						owner
+					</p>
 				</header>
 
 				{/* Search Section */}

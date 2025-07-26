@@ -55,7 +55,10 @@ export default function Registration({ loaderData }: Route.ComponentProps) {
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">
 						Registration
 					</h1>
-					<p className="text-gray-600">Register cars as they arrive</p>
+					<p className="text-gray-600">
+						Update car to Registered when it has arrived and completed
+						registration
+					</p>
 				</header>
 
 				{/* Search Section */}

@@ -53,7 +53,9 @@ export default function Floor({ loaderData }: Route.ComponentProps) {
 						</a>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">Floor</h1>
-					<p className="text-gray-600">Start service on registered cars</p>
+					<p className="text-gray-600">
+						Update car to On Deck when it is entering the floor for service
+					</p>
 				</header>
 
 				{/* Search Section */}

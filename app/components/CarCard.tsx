@@ -7,7 +7,7 @@ interface CarCardProps {
 
 // Type-safe color mapping with Tailwind classes
 // Updated to meet WCAG 2 AA contrast requirements (4.5:1 ratio)
-const COLOR_CLASSES: Record<CarColor, { bg: string; text: string }> = {
+export const COLOR_CLASSES: Record<CarColor, { bg: string; text: string }> = {
 	red: { bg: 'bg-red-700', text: 'text-white' },
 	blue: { bg: 'bg-blue-700', text: 'text-white' },
 	green: { bg: 'bg-green-700', text: 'text-white' },

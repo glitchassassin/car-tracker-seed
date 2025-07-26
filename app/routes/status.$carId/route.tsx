@@ -2,25 +2,9 @@ import { parseWithZod } from '@conform-to/zod'
 import { useMemo } from 'react'
 import { Link, redirect, useLocation } from 'react-router'
 import { createCarDB } from '../../lib/car-db'
-import type { CarColor } from '../../lib/car-db'
 import { statusActionSchema } from '../../lib/validation'
 import type { Route } from './+types/route'
-
-// Type-safe color mapping with Tailwind classes
-const COLOR_CLASSES: Record<CarColor, { bg: string; text: string }> = {
-	red: { bg: 'bg-red-700', text: 'text-white' },
-	blue: { bg: 'bg-blue-700', text: 'text-white' },
-	green: { bg: 'bg-green-700', text: 'text-white' },
-	yellow: { bg: 'bg-yellow-600', text: 'text-black' },
-	orange: { bg: 'bg-orange-700', text: 'text-white' },
-	purple: { bg: 'bg-purple-700', text: 'text-white' },
-	brown: { bg: 'bg-amber-800', text: 'text-white' },
-	black: { bg: 'bg-gray-900', text: 'text-white' },
-	white: { bg: 'bg-gray-100', text: 'text-gray-900' },
-	gray: { bg: 'bg-gray-700', text: 'text-white' },
-	silver: { bg: 'bg-gray-400', text: 'text-gray-900' },
-	gold: { bg: 'bg-yellow-600', text: 'text-black' },
-}
+import { COLOR_CLASSES } from '~/components/CarCard'
 
 export function meta({}: Route.MetaArgs) {
 	return [
@@ -207,15 +191,27 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 	const location = useLocation()
 
 	// Determine back button text based on referrer
-	const backButtonText = useMemo(() => {
+	const { backButtonText, backButtonHref } = useMemo(() => {
 		if (location.pathname.startsWith('/registration')) {
-			return '← Back to Registration'
+			return {
+				backButtonText: '← Back to Registration',
+				backButtonHref: '/registration',
+			}
 		} else if (location.pathname.startsWith('/floor')) {
-			return '← Back to Floor'
+			return {
+				backButtonText: '← Back to Floor',
+				backButtonHref: '/floor',
+			}
 		} else if (location.pathname.startsWith('/handoff')) {
-			return '← Back to Handoff'
+			return {
+				backButtonText: '← Back to Handoff',
+				backButtonHref: '/handoff',
+			}
 		} else {
-			return '← Back to Home'
+			return {
+				backButtonText: '← Back to Home',
+				backButtonHref: '/',
+			}
 		}
 	}, [location.pathname])
 
@@ -225,7 +221,7 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 				<header className="text-center">
 					<div className="mb-4 flex justify-start">
 						<Link
-							to={'..'}
+							to={backButtonHref}
 							className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
 						>
 							{backButtonText}
@@ -274,7 +270,7 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 								type="submit"
 								name="targetStatus"
 								value={statusActions.primary.targetStatus}
-								className="w-full rounded-lg bg-blue-600 p-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700"
+								className="w-full cursor-pointer rounded-lg bg-blue-600 p-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700"
 							>
 								{statusActions.primary.label}
 							</button>
@@ -289,7 +285,7 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 										type="submit"
 										name="targetStatus"
 										value={action.targetStatus}
-										className="w-full rounded-lg bg-gray-100 p-3 text-base font-semibold text-gray-700 transition-colors hover:bg-gray-200"
+										className="w-full cursor-pointer rounded-lg bg-gray-100 p-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
 									>
 										{action.label}
 									</button>
