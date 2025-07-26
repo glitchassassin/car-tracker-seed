@@ -14,6 +14,20 @@ export const carIdSchema = z.object({
 		}),
 })
 
+// Schema for car status updates received via WebSocket
+export const carStatusUpdateSchema = z.object({
+	carId: z.number().int().positive(),
+	oldStatus: z.string(),
+	newStatus: z.string(),
+	timestamp: z.string().datetime(),
+})
+
+// Schema for WebSocket message envelope
+export const carUpdateMessageSchema = z.object({
+	type: z.literal('car_status_update'),
+	data: carStatusUpdateSchema,
+})
+
 // Schema for status action validation
 export const statusActionSchema = z.object({
 	targetStatus: z.enum(['PRE_ARRIVAL', 'REGISTERED', 'ON_DECK', 'DONE']),
@@ -38,3 +52,5 @@ export type CarIdFormData = z.infer<typeof carIdSchema>
 export type StatusActionFormData = z.infer<typeof statusActionSchema>
 export type SqlQueryFormData = z.infer<typeof sqlQuerySchema>
 export type CarLookupFormData = z.infer<typeof carLookupSchema>
+export type CarStatusUpdate = z.infer<typeof carStatusUpdateSchema>
+export type CarUpdateMessage = z.infer<typeof carUpdateMessageSchema>

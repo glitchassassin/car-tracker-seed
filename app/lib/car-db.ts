@@ -54,7 +54,10 @@ export interface CarInput {
  * Encapsulates all database operations for car data
  */
 export class CarDB {
-	constructor(private db: D1Database) {}
+	constructor(
+		private db: D1Database,
+		private env?: { CAR_UPDATES?: DurableObjectNamespace<any> },
+	) {}
 
 	/**
 	 * Get a car by ID
@@ -110,6 +113,10 @@ export class CarDB {
 	 * Update car status with timestamp tracking
 	 */
 	async updateCarStatus(id: number, newStatus: CarStatus): Promise<Car | null> {
+		// Get the current car to capture the old status
+		const currentCar = await this.getCarById(id)
+		const oldStatus = currentCar?.status || 'UNKNOWN'
+
 		const timestampField = this.getTimestampField(newStatus)
 		const currentTime = new Date().toISOString()
 
@@ -135,12 +142,49 @@ export class CarDB {
 				return null // Car not found
 			}
 
-			// Return the updated car
-			return await this.getCarById(id)
+			// Get the updated car
+			const updatedCar = await this.getCarById(id)
+
+			// Broadcast the status update if we have the env
+			if (this.env?.CAR_UPDATES && updatedCar) {
+				try {
+					await this.broadcastStatusUpdate(id, oldStatus, newStatus)
+				} catch (error) {
+					console.error('Failed to broadcast status update:', error)
+				}
+			}
+
+			return updatedCar
 		} catch (error) {
 			console.error('Error updating car status:', error)
 			throw new Error(`Failed to update car ${id} to status ${newStatus}`)
 		}
+	}
+
+	/**
+	 * Broadcast a car status update to connected clients
+	 */
+	private async broadcastStatusUpdate(
+		carId: number,
+		oldStatus: string,
+		newStatus: string,
+	): Promise<void> {
+		if (!this.env?.CAR_UPDATES) return
+
+		const { getCarUpdatesStub } = await import('./car-updates')
+		const stub = getCarUpdatesStub(this.env as any)
+
+		const update = {
+			carId,
+			oldStatus,
+			newStatus,
+			timestamp: new Date().toISOString(),
+		}
+
+		await stub.fetch('http://internal/broadcast', {
+			method: 'POST',
+			body: JSON.stringify(update),
+		})
 	}
 
 	/**
@@ -265,6 +309,9 @@ export class CarDB {
 /**
  * Create a CarDB instance from the environment
  */
-export function createCarDB(env: { DB: D1Database }): CarDB {
-	return new CarDB(env.DB)
+export function createCarDB(env: {
+	DB: D1Database
+	CAR_UPDATES?: DurableObjectNamespace<any>
+}): CarDB {
+	return new CarDB(env.DB, env)
 }

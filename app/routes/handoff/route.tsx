@@ -2,6 +2,7 @@ import { parseWithZod } from '@conform-to/zod'
 import { redirect } from 'react-router'
 import { CarCard } from '../../components/CarCard'
 import { SearchForm } from '../../components/SearchForm'
+import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
 import { createCarDB } from '../../lib/car-db'
 import { carLookupSchema } from '../../lib/validation'
 import type { Route } from './+types/route'
@@ -39,6 +40,11 @@ export async function loader({ context }: Route.LoaderArgs) {
 
 export default function Handoff({ loaderData }: Route.ComponentProps) {
 	const { onDeckCars } = loaderData
+
+	// Listen for real-time updates on ON_DECK status changes
+	useRevalidateOnCarUpdates({
+		statusFilter: 'ON_DECK',
+	})
 
 	return (
 		<main className="min-h-screen p-4">

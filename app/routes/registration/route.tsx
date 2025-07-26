@@ -2,6 +2,7 @@ import { parseWithZod } from '@conform-to/zod'
 import { redirect } from 'react-router'
 import { CarCard } from '../../components/CarCard'
 import { SearchForm } from '../../components/SearchForm'
+import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
 import { createCarDB } from '../../lib/car-db'
 import { carLookupSchema } from '../../lib/validation'
 import type { Route } from './+types/route'
@@ -39,6 +40,11 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Registration({ loaderData }: Route.ComponentProps) {
 	const { preArrivalCars } = loaderData
+
+	// Listen for real-time updates on PRE_ARRIVAL status changes
+	useRevalidateOnCarUpdates({
+		statusFilter: 'PRE_ARRIVAL',
+	})
 
 	return (
 		<main className="min-h-screen p-4">
