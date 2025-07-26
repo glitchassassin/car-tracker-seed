@@ -13,7 +13,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			const testCarData: TestCar = {
 				make: 'Honda',
 				model: 'Civic',
-				color: 'Blue',
+				color: 'blue',
 				license_plate: uniqueLicensePlate,
 				status: 'PRE_ARRIVAL',
 			}
@@ -110,7 +110,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			const testCarData: TestCar = {
 				make: 'Toyota',
 				model: 'Camry',
-				color: 'Silver',
+				color: 'silver',
 				license_plate: uniqueLicensePlate,
 				status: 'PRE_ARRIVAL',
 			}
@@ -213,7 +213,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			const testCarData1: TestCar = {
 				make: 'Ford',
 				model: 'Focus',
-				color: 'Red',
+				color: 'red',
 				license_plate: uniqueLicensePlate1,
 				status: 'PRE_ARRIVAL',
 			}
@@ -225,7 +225,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			const testCarData2: TestCar = {
 				make: 'Nissan',
 				model: 'Altima',
-				color: 'Black',
+				color: 'black',
 				license_plate: uniqueLicensePlate2,
 				status: 'PRE_ARRIVAL',
 			}
@@ -305,7 +305,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			const testCarData: TestCar = {
 				make: 'Chevrolet',
 				model: 'Malibu',
-				color: 'White',
+				color: 'white',
 				license_plate: uniqueLicensePlate,
 				status: 'PRE_ARRIVAL',
 			}

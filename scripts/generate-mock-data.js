@@ -4,6 +4,8 @@
  * Generate mock vehicle data for the Car Tracker application
  * Creates realistic car data with makes, models, colors, and license plates
  * Outputs to CSV format for import into the database
+ *
+ * Colors align with the CarColor type in app/lib/car-db.ts
  */
 
 import fs from 'fs'
@@ -70,21 +72,18 @@ const CAR_MAKES_MODELS = {
 }
 
 const COLORS = [
-	'White',
-	'Black',
-	'Silver',
-	'Gray',
-	'Red',
-	'Blue',
-	'Green',
-	'Brown',
-	'Orange',
-	'Yellow',
-	'Purple',
-	'Gold',
-	'Beige',
-	'Navy',
-	'Maroon',
+	'white',
+	'black',
+	'gray',
+	'silver',
+	'blue',
+	'red',
+	'green',
+	'brown',
+	'orange',
+	'gold',
+	'purple',
+	'yellow',
 ]
 
 const STATES = ['CA', 'TX', 'FL', 'NY', 'PA', 'IL', 'OH', 'GA', 'NC', 'MI']

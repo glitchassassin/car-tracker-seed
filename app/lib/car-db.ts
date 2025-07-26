@@ -5,11 +5,34 @@
 
 export type CarStatus = 'PRE_ARRIVAL' | 'REGISTERED' | 'ON_DECK' | 'DONE'
 
+// Array of all valid car colors
+export const VALID_CAR_COLORS = [
+	'white',
+	'black',
+	'gray',
+	'silver',
+	'blue',
+	'red',
+	'green',
+	'brown',
+	'orange',
+	'gold',
+	'purple',
+	'yellow',
+] as const
+
+export type CarColor = (typeof VALID_CAR_COLORS)[number]
+
+// Helper function to check if a string is a valid car color
+export function isValidCarColor(color: string): color is CarColor {
+	return VALID_CAR_COLORS.includes(color as CarColor)
+}
+
 export interface Car {
 	id: number
 	make: string
 	model: string
-	color: string
+	color: CarColor
 	license_plate: string
 	status: CarStatus
 	created_at: string
@@ -22,7 +45,7 @@ export interface CarInput {
 	id: number
 	make: string
 	model: string
-	color: string
+	color: CarColor
 	license_plate: string
 }
 
@@ -218,12 +241,13 @@ export class CarDB {
 			errors.push('Model is required')
 		}
 
+		// Validate color against CarColor type
 		if (
 			!car.color ||
 			typeof car.color !== 'string' ||
-			car.color.trim().length === 0
+			!isValidCarColor(car.color)
 		) {
-			errors.push('Color is required')
+			errors.push(`Color must be one of: ${VALID_CAR_COLORS.join(', ')}`)
 		}
 
 		if (

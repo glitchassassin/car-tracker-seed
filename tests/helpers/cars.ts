@@ -1,10 +1,33 @@
 import type { Page } from '@playwright/test'
 import { executeSQL } from './sql'
 
+const VALID_CAR_COLORS = [
+	'red',
+	'blue',
+	'green',
+	'yellow',
+	'orange',
+	'purple',
+	'pink',
+	'brown',
+	'black',
+	'white',
+	'gray',
+	'silver',
+	'gold',
+	'navy',
+	'maroon',
+	'teal',
+	'olive',
+	'lime',
+	'aqua',
+	'fuchsia',
+] as const
+
 export interface TestCar {
 	make: string
 	model: string
-	color: string
+	color: (typeof VALID_CAR_COLORS)[number]
 	license_plate: string
 	status?: 'PRE_ARRIVAL' | 'REGISTERED' | 'ON_DECK' | 'DONE'
 }

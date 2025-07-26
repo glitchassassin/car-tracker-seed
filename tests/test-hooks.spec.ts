@@ -11,7 +11,7 @@ test.describe('Test Hooks - Car Management', () => {
 		const testCarData: TestCar = {
 			make: 'Tesla',
 			model: 'Model 3',
-			color: 'White',
+			color: 'white',
 			license_plate: uniqueId,
 			status: 'PRE_ARRIVAL',
 		}
@@ -52,14 +52,14 @@ test.describe('Test Hooks - Car Management', () => {
 		const car1Data: TestCar = {
 			make: 'Honda',
 			model: 'Civic',
-			color: 'Blue',
+			color: 'blue',
 			license_plate: `TEST${timestamp}_${uniqueBase}A`,
 		}
 
 		const car2Data: TestCar = {
 			make: 'Toyota',
 			model: 'Camry',
-			color: 'Silver',
+			color: 'silver',
 			license_plate: `TEST${timestamp}_${uniqueBase}B`,
 		}
 
