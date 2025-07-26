@@ -80,7 +80,7 @@
 	"migrations": [
 		{
 			"tag": "v1",
-			"new_classes": ["CarUpdatesServer"],
+			"new_sqlite_classes": ["CarUpdatesServer"],
 		},
 	],
 }
