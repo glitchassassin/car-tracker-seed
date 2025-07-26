@@ -45,7 +45,6 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Verify car details display correctly
 			await expect(page.getByText('Honda')).toBeVisible()
 			await expect(page.getByText('Civic')).toBeVisible()
-			await expect(page.getByText('Blue')).toBeVisible()
 
 			// Click "Move to Registered" button
 			await page.getByRole('button', { name: /move to registered/i }).click()
@@ -68,7 +67,6 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Verify car details display correctly
 			await expect(page.getByText('Honda')).toBeVisible()
 			await expect(page.getByText('Civic')).toBeVisible()
-			await expect(page.getByText('Blue')).toBeVisible()
 
 			// Click "Move to On Deck" button
 			await page.getByRole('button', { name: /move to on deck/i }).click()
@@ -91,7 +89,6 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Verify car details display correctly
 			await expect(page.getByText('Honda')).toBeVisible()
 			await expect(page.getByText('Civic')).toBeVisible()
-			await expect(page.getByText('Blue')).toBeVisible()
 
 			// Click "Move to Done" button
 			await page.getByRole('button', { name: /move to done/i }).click()
@@ -138,12 +135,11 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/status/${carId}`)
+			await expect(page).toHaveURL(`/registration/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
-			await expect(page.getByText('Silver')).toBeVisible()
 
 			// Click "Move to Registered" button
 			await page.getByRole('button', { name: /move to registered/i }).click()
@@ -162,12 +158,11 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/status/${carId}`)
+			await expect(page).toHaveURL(`/floor/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
-			await expect(page.getByText('Silver')).toBeVisible()
 
 			// Click "Move to On Deck" button
 			await page.getByRole('button', { name: /move to on deck/i }).click()
@@ -186,12 +181,11 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/status/${carId}`)
+			await expect(page).toHaveURL(`/handoff/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
-			await expect(page.getByText('Silver')).toBeVisible()
 
 			// Click "Move to Done" button
 			await page.getByRole('button', { name: /move to done/i }).click()
@@ -253,15 +247,11 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/status/${carId1}`)
+			await expect(page).toHaveURL(`/floor/${carId1}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Ford')).toBeVisible()
 			await expect(page.getByText('Focus')).toBeVisible()
-			// Use a more specific selector to avoid conflict with button text
-			await expect(
-				page.locator('p.text-lg.text-gray-900').filter({ hasText: 'Red' }),
-			).toBeVisible()
 
 			// Click "Skip to On Deck" button (since car is in PRE_ARRIVAL status)
 			await page.getByRole('button', { name: /skip to on deck/i }).click()
@@ -281,12 +271,11 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/status/${carId2}`)
+			await expect(page).toHaveURL(`/handoff/${carId2}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Nissan')).toBeVisible()
 			await expect(page.getByText('Altima')).toBeVisible()
-			await expect(page.getByText('Black')).toBeVisible()
 
 			// Click "Skip to Done" button (since car is in PRE_ARRIVAL status)
 			await page.getByRole('button', { name: /skip to done/i }).click()

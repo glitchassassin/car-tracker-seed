@@ -1,8 +1,26 @@
 import { parseWithZod } from '@conform-to/zod'
-import { redirect } from 'react-router'
+import { useMemo } from 'react'
+import { Link, redirect, useLocation } from 'react-router'
 import { createCarDB } from '../../lib/car-db'
+import type { CarColor } from '../../lib/car-db'
 import { statusActionSchema } from '../../lib/validation'
 import type { Route } from './+types/route'
+
+// Type-safe color mapping with Tailwind classes
+const COLOR_CLASSES: Record<CarColor, { bg: string; text: string }> = {
+	red: { bg: 'bg-red-700', text: 'text-white' },
+	blue: { bg: 'bg-blue-700', text: 'text-white' },
+	green: { bg: 'bg-green-700', text: 'text-white' },
+	yellow: { bg: 'bg-yellow-600', text: 'text-black' },
+	orange: { bg: 'bg-orange-700', text: 'text-white' },
+	purple: { bg: 'bg-purple-700', text: 'text-white' },
+	brown: { bg: 'bg-amber-800', text: 'text-white' },
+	black: { bg: 'bg-gray-900', text: 'text-white' },
+	white: { bg: 'bg-gray-100', text: 'text-gray-900' },
+	gray: { bg: 'bg-gray-700', text: 'text-white' },
+	silver: { bg: 'bg-gray-400', text: 'text-gray-900' },
+	gold: { bg: 'bg-yellow-600', text: 'text-black' },
+}
 
 export function meta({}: Route.MetaArgs) {
 	return [
@@ -11,7 +29,7 @@ export function meta({}: Route.MetaArgs) {
 	]
 }
 
-export async function loader({ context, params, request }: Route.LoaderArgs) {
+export async function loader({ context, params }: Route.LoaderArgs) {
 	const carDB = createCarDB(context.cloudflare.env)
 	const carId = parseInt(params.carId!, 10)
 
@@ -24,12 +42,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 		throw new Error('Car not found')
 	}
 
-	// Get referrer to determine back navigation
-	const referrer = request.headers.get('referer') || '/'
-	const url = new URL(referrer)
-	const referrerPath = url.pathname
-
-	return { car, referrerPath }
+	return { car }
 }
 
 export async function action({ context, params, request }: Route.ActionArgs) {
@@ -42,13 +55,27 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 		return submission.reply()
 	}
 
-	const { targetStatus, referrerPath } = submission.value
+	const { targetStatus } = submission.value
 
 	// Update car status to target status
 	await carDB.updateCarStatus(carId, targetStatus)
 
-	// Redirect back to the referrer path
-	return redirect(referrerPath)
+	// Get the current URL to determine the parent route
+	const url = new URL(request.url)
+	const pathSegments = url.pathname.split('/')
+
+	// Determine the parent route based on the current path
+	let redirectPath = '/'
+	if (pathSegments.includes('registration')) {
+		redirectPath = '/registration'
+	} else if (pathSegments.includes('floor')) {
+		redirectPath = '/floor'
+	} else if (pathSegments.includes('handoff')) {
+		redirectPath = '/handoff'
+	}
+
+	// Redirect back to the appropriate parent route
+	return redirect(redirectPath)
 }
 
 // Helper function to get status-specific actions
@@ -59,18 +86,15 @@ function getStatusActions(carStatus: string) {
 				primary: {
 					targetStatus: 'REGISTERED',
 					label: 'Move to Registered',
-					className: 'bg-green-700 hover:bg-green-800 text-white',
 				},
 				secondary: [
 					{
 						targetStatus: 'ON_DECK',
 						label: 'Skip to On Deck',
-						className: 'bg-yellow-100 hover:bg-yellow-200 text-gray-700',
 					},
 					{
 						targetStatus: 'DONE',
 						label: 'Skip to Done',
-						className: 'bg-orange-100 hover:bg-orange-200 text-gray-700',
 					},
 				],
 			}
@@ -79,18 +103,15 @@ function getStatusActions(carStatus: string) {
 				primary: {
 					targetStatus: 'ON_DECK',
 					label: 'Move to On Deck',
-					className: 'bg-blue-700 hover:bg-blue-800 text-white',
 				},
 				secondary: [
 					{
 						targetStatus: 'PRE_ARRIVAL',
 						label: 'Return to Pre-Arrival',
-						className: 'bg-gray-100 hover:bg-gray-200 text-gray-700',
 					},
 					{
 						targetStatus: 'DONE',
 						label: 'Skip to Done',
-						className: 'bg-orange-100 hover:bg-orange-200 text-gray-700',
 					},
 				],
 			}
@@ -99,18 +120,15 @@ function getStatusActions(carStatus: string) {
 				primary: {
 					targetStatus: 'DONE',
 					label: 'Move to Done',
-					className: 'bg-orange-700 hover:bg-orange-800 text-white',
 				},
 				secondary: [
 					{
 						targetStatus: 'PRE_ARRIVAL',
 						label: 'Return to Pre-Arrival',
-						className: 'bg-gray-100 hover:bg-gray-200 text-gray-700',
 					},
 					{
 						targetStatus: 'REGISTERED',
 						label: 'Return to Registered',
-						className: 'bg-blue-100 hover:bg-blue-200 text-gray-700',
 					},
 				],
 			}
@@ -121,17 +139,14 @@ function getStatusActions(carStatus: string) {
 					{
 						targetStatus: 'PRE_ARRIVAL',
 						label: 'Return to Pre-Arrival',
-						className: 'bg-gray-100 hover:bg-gray-200 text-gray-700',
 					},
 					{
 						targetStatus: 'REGISTERED',
 						label: 'Return to Registered',
-						className: 'bg-blue-100 hover:bg-blue-200 text-gray-700',
 					},
 					{
 						targetStatus: 'ON_DECK',
 						label: 'Return to On Deck',
-						className: 'bg-yellow-100 hover:bg-yellow-200 text-gray-700',
 					},
 				],
 			}
@@ -185,84 +200,67 @@ function getStatusDisplayInfo(status: string) {
 }
 
 export default function StatusDetail({ loaderData }: Route.ComponentProps) {
-	const { car, referrerPath } = loaderData
+	const { car } = loaderData
 	const statusActions = getStatusActions(car.status)
 	const statusInfo = getStatusDisplayInfo(car.status)
 
+	const location = useLocation()
+
 	// Determine back button text based on referrer
-	const getBackButtonText = (path: string) => {
-		switch (path) {
-			case '/registration':
-				return '← Back to Registration'
-			case '/floor':
-				return '← Back to Floor'
-			case '/handoff':
-				return '← Back to Handoff'
-			default:
-				return '← Back to Home'
+	const backButtonText = useMemo(() => {
+		if (location.pathname.startsWith('/registration')) {
+			return '← Back to Registration'
+		} else if (location.pathname.startsWith('/floor')) {
+			return '← Back to Floor'
+		} else if (location.pathname.startsWith('/handoff')) {
+			return '← Back to Handoff'
+		} else {
+			return '← Back to Home'
 		}
-	}
+	}, [location.pathname])
 
 	return (
 		<main className="min-h-screen p-4">
 			<div className="mx-auto max-w-2xl space-y-8">
 				<header className="text-center">
 					<div className="mb-4 flex justify-start">
-						<a
-							href={referrerPath}
+						<Link
+							to={'..'}
 							className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
 						>
-							{getBackButtonText(referrerPath)}
-						</a>
+							{backButtonText}
+						</Link>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">
 						Car #{car.id} Details
 					</h1>
-					<p className="text-gray-600">Current Status: {statusInfo.title}</p>
 				</header>
 
-				{/* Status Badge */}
-				<section className="text-center">
-					<div
-						className={`inline-flex items-center rounded-full px-4 py-2 ${statusInfo.bgColor}`}
-					>
-						<span className={`text-sm font-semibold ${statusInfo.color}`}>
-							{statusInfo.title}
-						</span>
-					</div>
-					<p className="mt-2 text-sm text-gray-600">{statusInfo.description}</p>
-				</section>
-
 				{/* Car Details */}
-				<section className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
-					<h2 className="text-xl font-semibold text-gray-900">
-						Vehicle Information
-					</h2>
+				<section
+					className={`space-y-4 rounded-lg border border-gray-200 p-6 ${COLOR_CLASSES[car.color].bg}`}
+				>
+					<div className="flex items-center justify-between">
+						<h2
+							className={`text-xl font-semibold ${COLOR_CLASSES[car.color].text}`}
+						>
+							Vehicle Information
+						</h2>
+						<div
+							className={`inline-flex items-center rounded-full px-4 py-2 ${statusInfo.bgColor}`}
+						>
+							<span className={`text-sm font-semibold ${statusInfo.color}`}>
+								{statusInfo.title}
+							</span>
+						</div>
+					</div>
 
-					<div className="grid grid-cols-2 gap-4">
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Make
-							</label>
-							<p className="mt-1 text-lg text-gray-900">{car.make}</p>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Model
-							</label>
-							<p className="mt-1 text-lg text-gray-900">{car.model}</p>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Color
-							</label>
-							<p className="mt-1 text-lg text-gray-900">{car.color}</p>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								License Plate
-							</label>
-							<p className="mt-1 text-lg text-gray-900">{car.license_plate}</p>
+					<div className="rounded-lg bg-white p-4">
+						<div className="flex items-center justify-between">
+							<p className="text-lg text-gray-900">
+								{car.make} {car.model}
+							</p>
+							<p className="text-lg text-gray-900">{car.license_plate}</p>
 						</div>
 					</div>
 				</section>
@@ -270,15 +268,13 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 				{/* Action Buttons */}
 				<section className="space-y-4">
 					<form method="post" className="space-y-4">
-						<input type="hidden" name="referrerPath" value={referrerPath} />
-
 						{/* Primary Action */}
 						{statusActions.primary && (
 							<button
 								type="submit"
 								name="targetStatus"
 								value={statusActions.primary.targetStatus}
-								className={`w-full rounded-lg p-4 text-lg font-semibold transition-colors ${statusActions.primary.className}`}
+								className="w-full rounded-lg bg-blue-600 p-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700"
 							>
 								{statusActions.primary.label}
 							</button>
@@ -293,7 +289,7 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 										type="submit"
 										name="targetStatus"
 										value={action.targetStatus}
-										className={`w-full rounded-lg p-3 text-base font-semibold transition-colors ${action.className}`}
+										className="w-full rounded-lg bg-gray-100 p-3 text-base font-semibold text-gray-700 transition-colors hover:bg-gray-200"
 									>
 										{action.label}
 									</button>

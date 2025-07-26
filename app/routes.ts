@@ -6,7 +6,7 @@ const routes: RouteConfig = [
 	route('registration', 'routes/registration/route.tsx'),
 	route('floor', 'routes/floor/route.tsx'),
 	route('handoff', 'routes/handoff/route.tsx'),
-	route('status/:carId', 'routes/status.$carId/route.tsx'),
+	route(':path/:carId', 'routes/status.$carId/route.tsx'),
 ]
 
 // Only include test hooks in development

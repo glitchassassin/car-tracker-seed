@@ -6,19 +6,20 @@ interface CarCardProps {
 }
 
 // Type-safe color mapping with Tailwind classes
+// Updated to meet WCAG 2 AA contrast requirements (4.5:1 ratio)
 const COLOR_CLASSES: Record<CarColor, { bg: string; text: string }> = {
-	red: { bg: 'bg-red-600', text: 'text-white' },
-	blue: { bg: 'bg-blue-600', text: 'text-white' },
-	green: { bg: 'bg-green-600', text: 'text-white' },
-	yellow: { bg: 'bg-yellow-400', text: 'text-black' },
-	orange: { bg: 'bg-orange-600', text: 'text-white' },
-	purple: { bg: 'bg-purple-600', text: 'text-white' },
-	brown: { bg: 'bg-amber-700', text: 'text-white' },
+	red: { bg: 'bg-red-700', text: 'text-white' },
+	blue: { bg: 'bg-blue-700', text: 'text-white' },
+	green: { bg: 'bg-green-700', text: 'text-white' },
+	yellow: { bg: 'bg-yellow-600', text: 'text-black' },
+	orange: { bg: 'bg-orange-700', text: 'text-white' },
+	purple: { bg: 'bg-purple-700', text: 'text-white' },
+	brown: { bg: 'bg-amber-800', text: 'text-white' },
 	black: { bg: 'bg-gray-900', text: 'text-white' },
 	white: { bg: 'bg-gray-100', text: 'text-gray-900' },
-	gray: { bg: 'bg-gray-600', text: 'text-white' },
-	silver: { bg: 'bg-gray-300', text: 'text-gray-900' },
-	gold: { bg: 'bg-yellow-500', text: 'text-black' },
+	gray: { bg: 'bg-gray-700', text: 'text-white' },
+	silver: { bg: 'bg-gray-400', text: 'text-gray-900' },
+	gold: { bg: 'bg-yellow-600', text: 'text-black' },
 }
 
 export function CarCard({ car, href }: CarCardProps) {

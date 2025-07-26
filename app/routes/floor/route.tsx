@@ -25,7 +25,7 @@ export async function action({ request }: Route.ActionArgs) {
 	}
 
 	// Redirect to the unified status page
-	return redirect(`/status/${submission.value.carId}`)
+	return redirect(`/floor/${submission.value.carId}`)
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -75,7 +75,7 @@ export default function Floor({ loaderData }: Route.ComponentProps) {
 					) : (
 						<div className="space-y-3">
 							{registeredCars.map((car) => (
-								<CarCard key={car.id} car={car} href={`/status/${car.id}`} />
+								<CarCard key={car.id} car={car} href={`/floor/${car.id}`} />
 							))}
 						</div>
 					)}
