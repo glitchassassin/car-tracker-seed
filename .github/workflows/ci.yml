@@ -41,6 +41,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      - name: Set up local database
+        run: npm run db:reset-seed
+
       - name: Run Playwright tests
         run: npx playwright test
 
@@ -54,8 +57,7 @@ jobs:
   deploy-preview:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: false
-    # if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request'
     needs: [ci, playwright]
     outputs:
       preview-url: ${{ steps.extract-url.outputs.preview-url }}
@@ -106,10 +108,9 @@ jobs:
   deploy-production:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: false
-    # if:
-    #   github.event_name == 'push' && (github.ref == 'refs/heads/main' ||
-    #   github.ref == 'refs/heads/master')
+    if:
+      github.event_name == 'push' && (github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/master')
     needs: [ci, playwright]
 
     steps:
