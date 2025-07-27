@@ -33,21 +33,24 @@ export function CarCard({ car, href }: CarCardProps) {
 			className={`block rounded-lg border border-gray-200 transition-colors hover:opacity-90 ${bg}`}
 		>
 			<div className="flex items-center p-4">
-				{/* ID Number - Large font on the left */}
-				<div className={`w-20 flex-shrink-0 text-3xl font-bold ${text}`}>
+				{/* ID Number - Fixed width */}
+				<div className={`w-18 flex-shrink-0 text-3xl font-bold ${text}`}>
 					#{car.id}
 				</div>
 
-				{/* Make & Model */}
-				<div className={`flex-1 px-4 text-lg font-semibold ${text}`}>
-					{car.make} {car.model}
-				</div>
+				{/* Flex container for make/model and license plate */}
+				<div className="flex flex-1 flex-col items-end">
+					{/* Make & Model */}
+					<div className={`text-lg font-semibold ${text}`}>
+						{car.make} {car.model}
+					</div>
 
-				{/* License Plate */}
-				<div
-					className={`flex-shrink-0 font-mono text-lg font-semibold ${text}`}
-				>
-					{car.license_plate}
+					{/* License Plate */}
+					<div
+						className={`flex-shrink-0 font-mono text-lg font-semibold ${text}`}
+					>
+						{car.license_plate}
+					</div>
 				</div>
 			</div>
 		</Link>
