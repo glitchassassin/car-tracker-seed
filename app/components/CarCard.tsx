@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import type { Car, CarColor } from '../lib/car-db'
 
 interface CarCardProps {
@@ -26,8 +27,8 @@ export function CarCard({ car, href }: CarCardProps) {
 	const { bg, text } = COLOR_CLASSES[car.color]
 
 	return (
-		<a
-			href={href}
+		<Link
+			to={href}
 			data-testid={`car-${car.id}`}
 			className={`block rounded-lg border border-gray-200 transition-colors hover:opacity-90 ${bg}`}
 		>
@@ -49,6 +50,6 @@ export function CarCard({ car, href }: CarCardProps) {
 					{car.license_plate}
 				</div>
 			</div>
-		</a>
+		</Link>
 	)
 }

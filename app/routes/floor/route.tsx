@@ -1,5 +1,5 @@
 import { parseWithZod } from '@conform-to/zod'
-import { redirect } from 'react-router'
+import { Link, redirect } from 'react-router'
 import { CarCard } from '../../components/CarCard'
 import { SearchForm } from '../../components/SearchForm'
 import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
@@ -51,12 +51,12 @@ export default function Floor({ loaderData }: Route.ComponentProps) {
 			<div className="mx-auto max-w-4xl space-y-8">
 				<header className="text-center">
 					<div className="mb-4 flex justify-start">
-						<a
-							href="/"
+						<Link
+							to="/"
 							className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
 						>
 							← Back to Home
-						</a>
+						</Link>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">Floor</h1>
 					<p className="text-gray-600">

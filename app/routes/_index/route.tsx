@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import type { Route } from './+types/route'
 
 export function meta({}: Route.MetaArgs) {
@@ -20,29 +21,29 @@ export default function Home() {
 				</header>
 
 				<nav className="space-y-4">
-					<a
-						href="/registration"
+					<Link
+						to="/registration"
 						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-blue-600 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-blue-700"
 					>
 						<div>Registration</div>
 						<div className="text-sm">At registration table</div>
-					</a>
+					</Link>
 
-					<a
-						href="/floor"
+					<Link
+						to="/floor"
 						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-green-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-green-800"
 					>
 						<div>Floor</div>
 						<div className="text-sm">At the floor entrance</div>
-					</a>
+					</Link>
 
-					<a
-						href="/handoff"
+					<Link
+						to="/handoff"
 						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-orange-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-orange-800"
 					>
 						<div>Handoff</div>
 						<div className="text-sm">At the floor exit</div>
-					</a>
+					</Link>
 				</nav>
 			</div>
 		</main>

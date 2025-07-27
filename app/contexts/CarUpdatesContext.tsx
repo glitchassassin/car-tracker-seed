@@ -7,9 +7,7 @@ import {
 	useCallback,
 } from 'react'
 import type { ReactNode } from 'react'
-import type { CarStatus } from '../lib/car-db'
 import { carUpdateMessageSchema } from '../lib/validation'
-import type { CarStatusUpdate } from '../lib/validation'
 
 interface CarUpdateEvent {
 	carId: number
@@ -21,6 +19,7 @@ interface CarUpdateEvent {
 interface CarUpdatesContextType {
 	subscribe: (callback: (update: CarUpdateEvent) => void) => () => void
 	isConnected: boolean
+	connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
 }
 
 const CarUpdatesContext = createContext<CarUpdatesContextType | null>(null)
@@ -31,14 +30,19 @@ interface CarUpdatesProviderProps {
 
 export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 	const [isConnected, setIsConnected] = useState(false)
+	const [connectionStatus, setConnectionStatus] = useState<
+		'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+	>('connecting')
 	const wsRef = useRef<WebSocket | null>(null)
 	const reconnectTimeoutRef = useRef<number | null>(null)
 	const subscribersRef = useRef<Set<(update: CarUpdateEvent) => void>>(
 		new Set(),
 	)
+	const isPageVisibleRef = useRef(true)
 
 	const connect = useCallback(() => {
 		try {
+			setConnectionStatus('connecting')
 			// Create WebSocket connection to the car updates endpoint
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
 			const wsUrl = `${protocol}//${window.location.host}/api/car-updates`
@@ -47,6 +51,7 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 			ws.onopen = () => {
 				console.log('Connected to car updates WebSocket')
 				setIsConnected(true)
+				setConnectionStatus('connected')
 			}
 
 			ws.onmessage = (event) => {
@@ -82,9 +87,11 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 			ws.onclose = (event) => {
 				console.log('WebSocket connection closed:', event.code, event.reason)
 				setIsConnected(false)
+				setConnectionStatus('disconnected')
 
 				// Attempt to reconnect after a delay
 				if (event.code !== 1000) {
+					setConnectionStatus('reconnecting')
 					reconnectTimeoutRef.current = window.setTimeout(() => {
 						console.log('Attempting to reconnect...')
 						connect()
@@ -126,6 +133,29 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 		[],
 	)
 
+	// Handle page visibility changes (for Safari suspension)
+	useEffect(() => {
+		const handleVisibilityChange = () => {
+			isPageVisibleRef.current = !document.hidden
+
+			// If page becomes visible and we're disconnected, try to reconnect
+			if (
+				isPageVisibleRef.current &&
+				!isConnected &&
+				connectionStatus === 'disconnected'
+			) {
+				console.log('Page became visible, attempting to reconnect...')
+				connect()
+			}
+		}
+
+		document.addEventListener('visibilitychange', handleVisibilityChange)
+
+		return () => {
+			document.removeEventListener('visibilitychange', handleVisibilityChange)
+		}
+	}, [isConnected, connectionStatus, connect])
+
 	// Connect on mount
 	useEffect(() => {
 		connect()
@@ -139,6 +169,7 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 	const contextValue: CarUpdatesContextType = {
 		subscribe,
 		isConnected,
+		connectionStatus,
 	}
 
 	return (

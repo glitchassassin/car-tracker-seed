@@ -8,6 +8,7 @@ import {
 } from 'react-router'
 
 import type { Route } from './+types/root'
+import { ConnectionStatus } from './components/ConnectionStatus'
 import { CarUpdatesProvider } from './contexts/CarUpdatesContext'
 import './app.css'
 
@@ -45,6 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 	return (
 		<CarUpdatesProvider>
+			<ConnectionStatus />
 			<Outlet />
 		</CarUpdatesProvider>
 	)
