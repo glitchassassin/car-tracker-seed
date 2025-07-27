@@ -1,10 +1,10 @@
 import { parseWithZod } from '@conform-to/zod'
 import { Link, redirect } from 'react-router'
-import { CarCard } from '../../components/CarCard'
-import { SearchForm } from '../../components/SearchForm'
-import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
-import { carLookupSchema } from '../../lib/validation'
-import type { Route } from './+types/route'
+import { CarCard } from '../components/CarCard'
+import { SearchForm } from '../components/SearchForm'
+import { useRevalidateOnCarUpdates } from '../hooks/useRevalidateOnCarUpdates'
+import { carLookupSchema } from '../lib/validation'
+import type { Route } from './+types/registration'
 
 export function meta({}: Route.MetaArgs) {
 	return [

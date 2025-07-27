@@ -1,6 +1,6 @@
-import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
-import type { Car } from '../../lib/car-db'
-import type { Route } from './+types/route'
+import { useRevalidateOnCarUpdates } from '../hooks/useRevalidateOnCarUpdates'
+import type { Car } from '../lib/car-db'
+import type { Route } from './+types/projector'
 
 export function meta({}: Route.MetaArgs) {
 	return [

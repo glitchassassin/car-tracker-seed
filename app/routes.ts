@@ -2,11 +2,11 @@ import { index, route } from '@react-router/dev/routes'
 import type { RouteConfig } from '@react-router/dev/routes'
 
 const routes: RouteConfig = [
-	index('routes/_index/route.tsx'),
-	route('registration', 'routes/registration/route.tsx'),
-	route('pickup', 'routes/pickup/route.tsx'),
-	route('projector', 'routes/projector/route.tsx'),
-	route(':path/:carId', 'routes/status.$carId/route.tsx'),
+	index('routes/_index.tsx'),
+	route('registration', 'routes/registration.tsx'),
+	route('pickup', 'routes/pickup.tsx'),
+	route('projector', 'routes/projector.tsx'),
+	route(':path/:carId', 'routes/status.$carId.tsx'),
 ]
 
 // Only include test hooks in development

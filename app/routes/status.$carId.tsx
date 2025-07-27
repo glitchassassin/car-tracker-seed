@@ -1,8 +1,8 @@
 import { parseWithZod } from '@conform-to/zod'
 import { useMemo } from 'react'
 import { Link, redirect, useLocation } from 'react-router'
-import { statusActionSchema } from '../../lib/validation'
-import type { Route } from './+types/route'
+import { statusActionSchema } from '../lib/validation'
+import type { Route } from './+types/status.$carId'
 import { COLOR_CLASSES } from '~/components/CarCard'
 
 export function meta({}: Route.MetaArgs) {
