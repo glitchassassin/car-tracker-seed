@@ -1,7 +1,6 @@
 import { parseWithZod } from '@conform-to/zod'
 import { useMemo } from 'react'
 import { Link, redirect, useLocation } from 'react-router'
-import { createCarDB } from '../../lib/car-db'
 import { statusActionSchema } from '../../lib/validation'
 import type { Route } from './+types/route'
 import { COLOR_CLASSES } from '~/components/CarCard'
@@ -14,14 +13,13 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function loader({ context, params }: Route.LoaderArgs) {
-	const carDB = createCarDB(context.cloudflare.env)
 	const carId = parseInt(params.carId!, 10)
 
 	if (isNaN(carId)) {
 		throw new Error('Invalid car ID')
 	}
 
-	const car = await carDB.getCarById(carId)
+	const car = await context.carDB.getCarById(carId)
 	if (!car) {
 		throw new Error('Car not found')
 	}
@@ -30,7 +28,6 @@ export async function loader({ context, params }: Route.LoaderArgs) {
 }
 
 export async function action({ context, params, request }: Route.ActionArgs) {
-	const carDB = createCarDB(context.cloudflare.env)
 	const carId = parseInt(params.carId!, 10)
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, { schema: statusActionSchema })
@@ -42,7 +39,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 	const { targetStatus } = submission.value
 
 	// Update car status to target status
-	await carDB.updateCarStatus(carId, targetStatus)
+	await context.carDB.updateCarStatus(carId, targetStatus)
 
 	// Get the current URL to determine the parent route
 	const url = new URL(request.url)

@@ -3,7 +3,6 @@ import { Link, redirect } from 'react-router'
 import { CarCard } from '../../components/CarCard'
 import { SearchForm } from '../../components/SearchForm'
 import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
-import { createCarDB } from '../../lib/car-db'
 import { carLookupSchema } from '../../lib/validation'
 import type { Route } from './+types/route'
 
@@ -30,10 +29,9 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
-	const carDB = createCarDB(context.cloudflare.env)
 	const [onDeckCars, doneCars] = await Promise.all([
-		carDB.getCarsByStatus('ON_DECK'),
-		carDB.getCarsByStatus('DONE'),
+		context.carDB.getCarsByStatus('ON_DECK'),
+		context.carDB.getCarsByStatus('DONE'),
 	])
 
 	return {
