@@ -12,7 +12,7 @@ export function meta({}: Route.MetaArgs) {
 		{ title: 'Pickup - Car Tracker' },
 		{
 			name: 'description',
-			content: 'Pickup volunteer interface for car tracking',
+			content: 'Pickup and handoff volunteer interface for car tracking',
 		},
 	]
 }
@@ -31,24 +31,26 @@ export async function action({ request }: Route.ActionArgs) {
 
 export async function loader({ context }: Route.LoaderArgs) {
 	const carDB = createCarDB(context.cloudflare.env)
-	const doneCars = await carDB.getCarsByStatus('DONE')
+	const [onDeckCars, doneCars] = await Promise.all([
+		carDB.getCarsByStatus('ON_DECK'),
+		carDB.getCarsByStatus('DONE'),
+	])
 
 	return {
+		onDeckCars,
 		doneCars,
 	}
 }
 
 export default function Pickup({ loaderData }: Route.ComponentProps) {
-	const { doneCars } = loaderData
+	const { onDeckCars, doneCars } = loaderData
 
-	// Listen for real-time updates on DONE status changes
-	useRevalidateOnCarUpdates({
-		statusFilter: 'DONE',
-	})
+	// Listen for real-time updates on all status changes
+	useRevalidateOnCarUpdates()
 
 	return (
 		<main className="min-h-screen p-4">
-			<div className="mx-auto max-w-4xl space-y-8">
+			<div className="mx-auto max-w-7xl space-y-8">
 				<header className="text-center">
 					<div className="mb-4 flex justify-start">
 						<Link
@@ -60,7 +62,7 @@ export default function Pickup({ loaderData }: Route.ComponentProps) {
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">Pickup</h1>
 					<p className="text-gray-600">
-						Update car to Picked Up when the owner has collected their vehicle
+						Manage cars ready for handoff and pickup
 					</p>
 				</header>
 
@@ -70,24 +72,53 @@ export default function Pickup({ loaderData }: Route.ComponentProps) {
 					<SearchForm placeholder="Enter car ID..." />
 				</section>
 
-				{/* Queue Section */}
-				<section className="space-y-4">
-					<h2 className="text-xl font-semibold text-gray-900">
-						Done Cars ({doneCars.length})
-					</h2>
-
-					{doneCars.length === 0 ? (
-						<p className="py-8 text-center text-gray-500">
-							No cars ready for pickup
+				{/* Two Column Layout */}
+				<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+					{/* On Deck Column */}
+					<section className="space-y-4">
+						<h2 className="text-xl font-semibold text-gray-900">
+							On Deck Cars ({onDeckCars.length})
+						</h2>
+						<p className="text-sm text-gray-600">
+							Update car to Done when it is complete and ready to hand off to
+							the owner
 						</p>
-					) : (
-						<div className="space-y-3">
-							{doneCars.map((car) => (
-								<CarCard key={car.id} car={car} href={`/pickup/${car.id}`} />
-							))}
-						</div>
-					)}
-				</section>
+
+						{onDeckCars.length === 0 ? (
+							<p className="py-8 text-center text-gray-500">
+								No cars ready for handoff
+							</p>
+						) : (
+							<div className="space-y-3">
+								{onDeckCars.map((car) => (
+									<CarCard key={car.id} car={car} href={`/pickup/${car.id}`} />
+								))}
+							</div>
+						)}
+					</section>
+
+					{/* Done Column */}
+					<section className="space-y-4">
+						<h2 className="text-xl font-semibold text-gray-900">
+							Done Cars ({doneCars.length})
+						</h2>
+						<p className="text-sm text-gray-600">
+							Update car to Picked Up when the owner has collected their vehicle
+						</p>
+
+						{doneCars.length === 0 ? (
+							<p className="py-8 text-center text-gray-500">
+								No cars ready for pickup
+							</p>
+						) : (
+							<div className="space-y-3">
+								{doneCars.map((car) => (
+									<CarCard key={car.id} car={car} href={`/pickup/${car.id}`} />
+								))}
+							</div>
+						)}
+					</section>
+				</div>
 			</div>
 		</main>
 	)

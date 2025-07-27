@@ -59,8 +59,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Floor Phase
 			await page.goto('/')
 
-			// Select Floor mode
-			await page.getByRole('link', { name: /At the floor entrance/i }).click()
+			// Select Registration mode
+			await page.getByRole('link', { name: /registration/i }).click()
 
 			// Verify the created car appears in REGISTERED queue
 			await expect(page.getByTestId(`car-${carId}`)).toBeVisible()
@@ -79,14 +79,14 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Click "Move to On Deck" button
 			await page.getByRole('button', { name: /move to on deck/i }).click()
 
-			// Verify user is automatically redirected to /floor
-			await expect(page).toHaveURL('/floor')
+			// Verify user is automatically redirected to /registration
+			await expect(page).toHaveURL('/registration')
 
 			// Handoff Phase
 			await page.goto('/')
 
 			// Select Handoff mode
-			await page.getByRole('link', { name: /At the floor exit/i }).click()
+			await page.getByRole('link', { name: /At the pickup table/i }).click()
 
 			// Verify the created car appears in ON_DECK queue
 			await expect(page.getByTestId(`car-${carId}`)).toBeVisible()
@@ -105,8 +105,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Click "Move to Done" button
 			await page.getByRole('button', { name: /move to done/i }).click()
 
-			// Verify user is automatically redirected to /handoff
-			await expect(page).toHaveURL('/handoff')
+			// Verify user is automatically redirected to /pickup
+			await expect(page).toHaveURL('/pickup')
 
 			// Pickup Phase
 			await page.goto('/')
@@ -188,15 +188,15 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Floor Phase
 			await page.goto('/')
 
-			// Select Floor mode
-			await page.getByRole('link', { name: /At the floor entrance/i }).click()
+			// Select Registration mode
+			await page.getByRole('link', { name: /registration/i }).click()
 
 			// Search for the created car by ID
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/floor/${carId}`)
+			await expect(page).toHaveURL(`/registration/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
@@ -205,21 +205,21 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Click "Move to On Deck" button
 			await page.getByRole('button', { name: /move to on deck/i }).click()
 
-			// Verify user is automatically redirected to /floor
-			await expect(page).toHaveURL('/floor')
+			// Verify user is automatically redirected to /registration
+			await expect(page).toHaveURL('/registration')
 
 			// Handoff Phase
 			await page.goto('/')
 
 			// Select Handoff mode
-			await page.getByRole('link', { name: /At the floor exit/i }).click()
+			await page.getByRole('link', { name: /At the pickup table/i }).click()
 
 			// Search for the created car by ID
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/handoff/${carId}`)
+			await expect(page).toHaveURL(`/pickup/${carId}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
@@ -228,14 +228,14 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Click "Move to Done" button
 			await page.getByRole('button', { name: /move to done/i }).click()
 
-			// Verify user is automatically redirected to /handoff
-			await expect(page).toHaveURL('/handoff')
+			// Verify user is automatically redirected to /pickup
+			await expect(page).toHaveURL('/pickup')
 
 			// Pickup Phase
 			await page.goto('/')
 
 			// Select Pickup mode
-			await page.getByRole('link', { name: /pickup/i }).click()
+			await page.getByRole('link', { name: /At the pickup table/i }).click()
 
 			// Search for the created car by ID
 			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
@@ -301,14 +301,14 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			page,
 		}) => {
 			// Floor Phase - Process first car directly from PRE_ARRIVAL
-			await page.goto('/floor')
+			await page.goto('/registration')
 
 			// Search for the first created car by ID
 			await page.getByPlaceholder(/enter car id/i).fill(carId1.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/floor/${carId1}`)
+			await expect(page).toHaveURL(`/registration/${carId1}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Ford')).toBeVisible()
@@ -317,22 +317,22 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Click "Skip to On Deck" button (since car is in PRE_ARRIVAL status)
 			await page.getByRole('button', { name: /skip to on deck/i }).click()
 
-			// Verify user is automatically redirected to /floor
-			await expect(page).toHaveURL('/floor')
+			// Verify user is automatically redirected to /registration
+			await expect(page).toHaveURL('/registration')
 		})
 
 		test('Handoff Phase - Process second car directly from PRE_ARRIVAL', async ({
 			page,
 		}) => {
 			// Handoff Phase - Process second car directly from PRE_ARRIVAL
-			await page.goto('/handoff')
+			await page.goto('/pickup')
 
 			// Search for the second created car by ID
 			await page.getByPlaceholder(/enter car id/i).fill(carId2.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
-			await expect(page).toHaveURL(`/handoff/${carId2}`)
+			await expect(page).toHaveURL(`/pickup/${carId2}`)
 
 			// Verify car details display correctly
 			await expect(page.getByText('Nissan')).toBeVisible()
@@ -341,8 +341,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Click "Skip to Done" button (since car is in PRE_ARRIVAL status)
 			await page.getByRole('button', { name: /skip to done/i }).click()
 
-			// Verify user is automatically redirected to /handoff
-			await expect(page).toHaveURL('/handoff')
+			// Verify user is automatically redirected to /pickup
+			await expect(page).toHaveURL('/pickup')
 		})
 
 		test('Pickup Phase - Process car directly from PRE_ARRIVAL', async ({
@@ -455,8 +455,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 		})
 
 		test('Floor Phase', async ({ page }) => {
-			// Floor Phase
-			await page.goto('/floor')
+			// Floor Phase (now part of registration route)
+			await page.goto('/registration')
 
 			// Check accessibility with Axe
 			const floorAccessibilityScanResults = await new AxeBuilder({
@@ -476,8 +476,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 		})
 
 		test('Handoff Phase', async ({ page }) => {
-			// Handoff Phase
-			await page.goto('/handoff')
+			// Handoff Phase (now part of pickup route)
+			await page.goto('/pickup')
 
 			// Check accessibility with Axe
 			const handoffAccessibilityScanResults = await new AxeBuilder({

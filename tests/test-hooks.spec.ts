@@ -16,8 +16,22 @@ test.describe('Test Hooks - Car Management', () => {
 			status: 'PRE_ARRIVAL',
 		}
 
+		// second car is just to make sure any new cars
+		// created in parallel tests don't reuse these IDs
+		// as SQLite auto-increment starts at the highest
+		// existing ID, so there's a chance of IDs being
+		// reused after deleting the first car
+		const testCarData2: TestCar = {
+			make: 'Tesla',
+			model: 'Model 3',
+			color: 'white',
+			license_plate: uniqueId,
+			status: 'PRE_ARRIVAL',
+		}
+
 		// Step 1: Insert the test car
 		const createdCar = await createCar(page, testCarData)
+		const createdCar2 = await createCar(page, testCarData2)
 		console.log(
 			`Inserted car: ${createdCar.make} ${createdCar.model} (${createdCar.license_plate}) with ID ${createdCar.id}`,
 		)
@@ -43,6 +57,8 @@ test.describe('Test Hooks - Car Management', () => {
 		const deletedCar = await getCarById(page, createdCar.id)
 		expect(deletedCar).toBeNull()
 		console.log(`Verified car no longer exists: ID ${createdCar.id}`)
+
+		await deleteCar(page, createdCar2.id)
 	})
 
 	test('should handle multiple car operations', async ({ page }) => {
@@ -63,9 +79,22 @@ test.describe('Test Hooks - Car Management', () => {
 			license_plate: `TEST${timestamp}_${uniqueBase}B`,
 		}
 
+		// third car is just to make sure any new cars
+		// created in parallel tests don't reuse these IDs
+		// as SQLite auto-increment starts at the highest
+		// existing ID, so there's a chance of IDs being
+		// reused after deleting the first two cars
+		const car3Data: TestCar = {
+			make: 'Hyundai',
+			model: 'Elantra',
+			color: 'green',
+			license_plate: `TEST${timestamp}_${uniqueBase}C`,
+		}
+
 		// Insert both cars
 		const createdCar1 = await createCar(page, car1Data)
 		const createdCar2 = await createCar(page, car2Data)
+		const createdCar3 = await createCar(page, car3Data)
 
 		// Verify both cars exist by finding them specifically
 		const foundCar1 = await getCarById(page, createdCar1.id)
@@ -95,5 +124,8 @@ test.describe('Test Hooks - Car Management', () => {
 
 		expect(car1AfterCleanup).toBeNull()
 		expect(car2AfterCleanup).toBeNull()
+
+		// Delete the third car
+		await deleteCar(page, createdCar3.id)
 	})
 })

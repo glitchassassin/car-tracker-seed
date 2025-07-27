@@ -12,18 +12,9 @@ export function meta({}: Route.MetaArgs) {
 		{ title: 'Registration - Car Tracker' },
 		{
 			name: 'description',
-			content: 'Registration volunteer interface for car tracking',
+			content: 'Registration and floor volunteer interface for car tracking',
 		},
 	]
-}
-
-export async function loader({ context }: Route.LoaderArgs) {
-	const carDB = createCarDB(context.cloudflare.env)
-	const preArrivalCars = await carDB.getCarsByStatus('PRE_ARRIVAL')
-
-	return {
-		preArrivalCars,
-	}
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -38,17 +29,28 @@ export async function action({ request }: Route.ActionArgs) {
 	return redirect(`/registration/${submission.value.carId}`)
 }
 
-export default function Registration({ loaderData }: Route.ComponentProps) {
-	const { preArrivalCars } = loaderData
+export async function loader({ context }: Route.LoaderArgs) {
+	const carDB = createCarDB(context.cloudflare.env)
+	const [preArrivalCars, registeredCars] = await Promise.all([
+		carDB.getCarsByStatus('PRE_ARRIVAL'),
+		carDB.getCarsByStatus('REGISTERED'),
+	])
 
-	// Listen for real-time updates on PRE_ARRIVAL status changes
-	useRevalidateOnCarUpdates({
-		statusFilter: 'PRE_ARRIVAL',
-	})
+	return {
+		preArrivalCars,
+		registeredCars,
+	}
+}
+
+export default function Registration({ loaderData }: Route.ComponentProps) {
+	const { preArrivalCars, registeredCars } = loaderData
+
+	// Listen for real-time updates on all status changes
+	useRevalidateOnCarUpdates()
 
 	return (
 		<main className="min-h-screen p-4">
-			<div className="mx-auto max-w-4xl space-y-8">
+			<div className="mx-auto max-w-7xl space-y-8">
 				<header className="text-center">
 					<div className="mb-4 flex justify-start">
 						<Link
@@ -59,11 +61,10 @@ export default function Registration({ loaderData }: Route.ComponentProps) {
 						</Link>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">
-						Registration
+						Registration & Floor
 					</h1>
 					<p className="text-gray-600">
-						Update car to Registered when it has arrived and completed
-						registration
+						Manage cars for registration and floor entry
 					</p>
 				</header>
 
@@ -73,28 +74,61 @@ export default function Registration({ loaderData }: Route.ComponentProps) {
 					<SearchForm placeholder="Enter car ID..." />
 				</section>
 
-				{/* Queue Section */}
-				<section className="space-y-4">
-					<h2 className="text-xl font-semibold text-gray-900">
-						Pre-Arrival Cars ({preArrivalCars.length})
-					</h2>
-
-					{preArrivalCars.length === 0 ? (
-						<p className="py-8 text-center text-gray-500">
-							No cars waiting for registration
+				{/* Two Column Layout */}
+				<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+					{/* Pre-Arrival Column */}
+					<section className="space-y-4">
+						<h2 className="text-xl font-semibold text-gray-900">
+							Pre-Arrival Cars ({preArrivalCars.length})
+						</h2>
+						<p className="text-sm text-gray-600">
+							Update car to Registered when it has arrived and completed
+							registration
 						</p>
-					) : (
-						<div className="space-y-3">
-							{preArrivalCars.map((car) => (
-								<CarCard
-									key={car.id}
-									car={car}
-									href={`/registration/${car.id}`}
-								/>
-							))}
-						</div>
-					)}
-				</section>
+
+						{preArrivalCars.length === 0 ? (
+							<p className="py-8 text-center text-gray-500">
+								No cars waiting for registration
+							</p>
+						) : (
+							<div className="space-y-3">
+								{preArrivalCars.map((car) => (
+									<CarCard
+										key={car.id}
+										car={car}
+										href={`/registration/${car.id}`}
+									/>
+								))}
+							</div>
+						)}
+					</section>
+
+					{/* Registered Column */}
+					<section className="space-y-4">
+						<h2 className="text-xl font-semibold text-gray-900">
+							Registered Cars ({registeredCars.length})
+						</h2>
+						<p className="text-sm text-gray-600">
+							Update car to On Deck when it is entering the floor for service
+						</p>
+
+						{registeredCars.length === 0 ? (
+							<p className="py-8 text-center text-gray-500">
+								No cars waiting for service
+							</p>
+						) : (
+							<div className="space-y-3">
+								{registeredCars.map((car) => (
+									<CarCard
+										key={car.id}
+										car={car}
+										href={`/registration/${car.id}`}
+									/>
+								))}
+							</div>
+						)}
+					</section>
+				</div>
 			</div>
 		</main>
 	)

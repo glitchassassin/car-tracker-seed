@@ -76,6 +76,10 @@ function getStatusActions(carStatus: string) {
 						targetStatus: 'DONE',
 						label: 'Skip to Done',
 					},
+					{
+						targetStatus: 'PICKED_UP',
+						label: 'Skip to Picked Up',
+					},
 				],
 			}
 		case 'REGISTERED':
@@ -93,6 +97,10 @@ function getStatusActions(carStatus: string) {
 						targetStatus: 'DONE',
 						label: 'Skip to Done',
 					},
+					{
+						targetStatus: 'PICKED_UP',
+						label: 'Skip to Picked Up',
+					},
 				],
 			}
 		case 'ON_DECK':
@@ -109,6 +117,10 @@ function getStatusActions(carStatus: string) {
 					{
 						targetStatus: 'REGISTERED',
 						label: 'Return to Registered',
+					},
+					{
+						targetStatus: 'PICKED_UP',
+						label: 'Skip to Picked Up',
 					},
 				],
 			}

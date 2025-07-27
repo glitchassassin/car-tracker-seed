@@ -23,34 +23,18 @@ export default function Home() {
 				<nav className="space-y-4">
 					<Link
 						to="/registration"
-						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-blue-600 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-blue-700"
+						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-green-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-green-800"
 					>
 						<div>Registration</div>
 						<div className="text-sm">At registration table</div>
 					</Link>
 
 					<Link
-						to="/floor"
-						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-green-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-green-800"
-					>
-						<div>Floor</div>
-						<div className="text-sm">At the floor entrance</div>
-					</Link>
-
-					<Link
-						to="/handoff"
+						to="/pickup"
 						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-orange-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-orange-800"
 					>
-						<div>Handoff</div>
-						<div className="text-sm">At the floor exit</div>
-					</Link>
-
-					<Link
-						to="/pickup"
-						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-red-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-red-800"
-					>
 						<div>Pickup</div>
-						<div className="text-sm">At the handoff table</div>
+						<div className="text-sm">At the pickup table</div>
 					</Link>
 
 					<Link
