@@ -40,6 +40,9 @@ export function ConnectionStatus() {
 	return (
 		<div
 			className={`fixed top-4 right-4 rounded-lg border px-3 py-2 text-sm font-medium ${getStatusColor()} z-50`}
+			role="status"
+			aria-live="polite"
+			aria-label="Connection status"
 		>
 			{getStatusText()}
 		</div>
