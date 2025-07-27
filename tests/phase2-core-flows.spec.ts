@@ -42,9 +42,13 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Select the created car from queue to navigate to details page
 			await page.getByTestId(`car-${carId}`).click()
 
-			// Verify car details display correctly
-			await expect(page.getByText('Honda')).toBeVisible()
-			await expect(page.getByText('Civic')).toBeVisible()
+			// Verify car details display correctly - use the specific car's test ID to avoid conflicts
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Honda'),
+			).toBeVisible()
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Civic'),
+			).toBeVisible()
 
 			// Click "Move to Registered" button
 			await page.getByRole('button', { name: /move to registered/i }).click()
@@ -64,9 +68,13 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Select the created car from queue to navigate to details page
 			await page.getByTestId(`car-${carId}`).click()
 
-			// Verify car details display correctly
-			await expect(page.getByText('Honda')).toBeVisible()
-			await expect(page.getByText('Civic')).toBeVisible()
+			// Verify car details display correctly - use the specific car's test ID to avoid conflicts
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Honda'),
+			).toBeVisible()
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Civic'),
+			).toBeVisible()
 
 			// Click "Move to On Deck" button
 			await page.getByRole('button', { name: /move to on deck/i }).click()
@@ -86,9 +94,13 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Select the created car from queue to navigate to details page
 			await page.getByTestId(`car-${carId}`).click()
 
-			// Verify car details display correctly
-			await expect(page.getByText('Honda')).toBeVisible()
-			await expect(page.getByText('Civic')).toBeVisible()
+			// Verify car details display correctly - use the specific car's test ID to avoid conflicts
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Honda'),
+			).toBeVisible()
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Civic'),
+			).toBeVisible()
 
 			// Click "Move to Done" button
 			await page.getByRole('button', { name: /move to done/i }).click()
