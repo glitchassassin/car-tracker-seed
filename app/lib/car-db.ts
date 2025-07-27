@@ -110,6 +110,37 @@ export class CarDB {
 	}
 
 	/**
+	 * Get cars for projector view (excludes PRE_ARRIVAL)
+	 * Returns cars grouped by their display status
+	 */
+	async getProjectorCars(): Promise<{
+		inProgressCars: Car[]
+		doneCars: Car[]
+	}> {
+		try {
+			// Get cars that are REGISTERED or ON_DECK (In Progress)
+			const [inProgressResult, doneResult] = await Promise.all([
+				this.db
+					.prepare('SELECT * FROM cars WHERE status IN (?, ?) ORDER BY id ASC')
+					.bind('REGISTERED', 'ON_DECK')
+					.all<Car>(),
+				this.db
+					.prepare('SELECT * FROM cars WHERE status = ? ORDER BY id ASC')
+					.bind('DONE')
+					.all<Car>(),
+			])
+
+			return {
+				inProgressCars: inProgressResult.results || [],
+				doneCars: doneResult.results || [],
+			}
+		} catch (error) {
+			console.error('Error fetching projector cars:', error)
+			throw new Error('Failed to fetch projector cars')
+		}
+	}
+
+	/**
 	 * Update car status with timestamp tracking
 	 */
 	async updateCarStatus(id: number, newStatus: CarStatus): Promise<Car | null> {

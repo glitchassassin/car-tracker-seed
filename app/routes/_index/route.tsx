@@ -44,6 +44,14 @@ export default function Home() {
 						<div>Handoff</div>
 						<div className="text-sm">At the floor exit</div>
 					</Link>
+
+					<Link
+						to="/projector"
+						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-purple-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-purple-800"
+					>
+						<div>Projector</div>
+						<div className="text-sm">Display current status</div>
+					</Link>
 				</nav>
 			</div>
 		</main>
