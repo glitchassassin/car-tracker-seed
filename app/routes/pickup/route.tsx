@@ -1,0 +1,94 @@
+import { parseWithZod } from '@conform-to/zod'
+import { Link, redirect } from 'react-router'
+import { CarCard } from '../../components/CarCard'
+import { SearchForm } from '../../components/SearchForm'
+import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
+import { createCarDB } from '../../lib/car-db'
+import { carLookupSchema } from '../../lib/validation'
+import type { Route } from './+types/route'
+
+export function meta({}: Route.MetaArgs) {
+	return [
+		{ title: 'Pickup - Car Tracker' },
+		{
+			name: 'description',
+			content: 'Pickup volunteer interface for car tracking',
+		},
+	]
+}
+
+export async function action({ request }: Route.ActionArgs) {
+	const formData = await request.formData()
+	const submission = parseWithZod(formData, { schema: carLookupSchema })
+
+	if (submission.status !== 'success') {
+		return submission.reply()
+	}
+
+	// Redirect to the unified status page
+	return redirect(`/pickup/${submission.value.carId}`)
+}
+
+export async function loader({ context }: Route.LoaderArgs) {
+	const carDB = createCarDB(context.cloudflare.env)
+	const doneCars = await carDB.getCarsByStatus('DONE')
+
+	return {
+		doneCars,
+	}
+}
+
+export default function Pickup({ loaderData }: Route.ComponentProps) {
+	const { doneCars } = loaderData
+
+	// Listen for real-time updates on DONE status changes
+	useRevalidateOnCarUpdates({
+		statusFilter: 'DONE',
+	})
+
+	return (
+		<main className="min-h-screen p-4">
+			<div className="mx-auto max-w-4xl space-y-8">
+				<header className="text-center">
+					<div className="mb-4 flex justify-start">
+						<Link
+							to="/"
+							className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
+						>
+							← Back to Home
+						</Link>
+					</div>
+					<h1 className="mb-2 text-3xl font-bold text-gray-900">Pickup</h1>
+					<p className="text-gray-600">
+						Update car to Picked Up when the owner has collected their vehicle
+					</p>
+				</header>
+
+				{/* Search Section */}
+				<section className="space-y-4">
+					<h2 className="text-xl font-semibold text-gray-900">Look Up Car</h2>
+					<SearchForm placeholder="Enter car ID..." />
+				</section>
+
+				{/* Queue Section */}
+				<section className="space-y-4">
+					<h2 className="text-xl font-semibold text-gray-900">
+						Done Cars ({doneCars.length})
+					</h2>
+
+					{doneCars.length === 0 ? (
+						<p className="py-8 text-center text-gray-500">
+							No cars ready for pickup
+						</p>
+					) : (
+						<div className="space-y-3">
+							{doneCars.map((car) => (
+								<CarCard key={car.id} car={car} href={`/pickup/${car.id}`} />
+							))}
+						</div>
+					)}
+				</section>
+			</div>
+		</main>
+	)
+}

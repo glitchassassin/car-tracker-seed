@@ -29,7 +29,7 @@ export interface TestCar {
 	model: string
 	color: (typeof VALID_CAR_COLORS)[number]
 	license_plate: string
-	status?: 'PRE_ARRIVAL' | 'REGISTERED' | 'ON_DECK' | 'DONE'
+	status?: 'PRE_ARRIVAL' | 'REGISTERED' | 'ON_DECK' | 'DONE' | 'PICKED_UP'
 }
 
 export interface TestCarWithId extends TestCar {
@@ -41,6 +41,7 @@ export interface CarInDatabase extends TestCarWithId {
 	registered_at: string | null
 	on_deck_at: string | null
 	completed_at: string | null
+	picked_up_at: string | null
 }
 
 /**

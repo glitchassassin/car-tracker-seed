@@ -17,12 +17,17 @@ test.describe('Home Page', () => {
 		// Check that the subtitle is present
 		await expect(page.getByText('Select your volunteer role')).toBeVisible()
 
-		// Check that all three volunteer role buttons are present
+		// Check that all volunteer role buttons are present
 		await expect(page.getByRole('link', { name: 'Registration' })).toBeVisible()
 		await expect(
 			page.getByRole('link', { name: /At the floor entrance/i }),
 		).toBeVisible()
-		await expect(page.getByRole('link', { name: 'Handoff' })).toBeVisible()
+		await expect(
+			page.getByRole('link', { name: /At the floor exit/i }),
+		).toBeVisible()
+		await expect(
+			page.getByRole('link', { name: /At the handoff table/i }),
+		).toBeVisible()
 
 		// Verify that the page has loaded completely by checking the main content area
 		await expect(page.locator('main')).toBeVisible()
@@ -44,7 +49,11 @@ test.describe('Home Page', () => {
 		await expect(floorLink).toHaveAttribute('href', '/floor')
 
 		// Test Handoff link
-		const handoffLink = page.getByRole('link', { name: 'Handoff' })
+		const handoffLink = page.getByRole('link', { name: /At the floor exit/i })
 		await expect(handoffLink).toHaveAttribute('href', '/handoff')
+
+		// Test Pickup link
+		const pickupLink = page.getByRole('link', { name: /At the handoff table/i })
+		await expect(pickupLink).toHaveAttribute('href', '/pickup')
 	})
 })

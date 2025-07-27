@@ -107,6 +107,32 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 
 			// Verify user is automatically redirected to /handoff
 			await expect(page).toHaveURL('/handoff')
+
+			// Pickup Phase
+			await page.goto('/')
+
+			// Select Pickup mode
+			await page.getByRole('link', { name: /pickup/i }).click()
+
+			// Verify the created car appears in DONE queue
+			await expect(page.getByTestId(`car-${carId}`)).toBeVisible()
+
+			// Select the created car from queue to navigate to details page
+			await page.getByTestId(`car-${carId}`).click()
+
+			// Verify car details display correctly - use the specific car's test ID to avoid conflicts
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Honda'),
+			).toBeVisible()
+			await expect(
+				page.getByTestId(`car-${carId}`).getByText('Civic'),
+			).toBeVisible()
+
+			// Click "Mark as Picked Up" button
+			await page.getByRole('button', { name: /mark as picked up/i }).click()
+
+			// Verify user is automatically redirected to /pickup
+			await expect(page).toHaveURL('/pickup')
 		})
 	})
 
@@ -204,6 +230,29 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 
 			// Verify user is automatically redirected to /handoff
 			await expect(page).toHaveURL('/handoff')
+
+			// Pickup Phase
+			await page.goto('/')
+
+			// Select Pickup mode
+			await page.getByRole('link', { name: /pickup/i }).click()
+
+			// Search for the created car by ID
+			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/pickup/${carId}`)
+
+			// Verify car details display correctly
+			await expect(page.getByText('Toyota')).toBeVisible()
+			await expect(page.getByText('Camry')).toBeVisible()
+
+			// Click "Mark as Picked Up" button
+			await page.getByRole('button', { name: /mark as picked up/i }).click()
+
+			// Verify user is automatically redirected to /pickup
+			await expect(page).toHaveURL('/pickup')
 		})
 	})
 
@@ -294,6 +343,57 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 
 			// Verify user is automatically redirected to /handoff
 			await expect(page).toHaveURL('/handoff')
+		})
+
+		test('Pickup Phase - Process car directly from PRE_ARRIVAL', async ({
+			page,
+		}) => {
+			// Create a third test car for pickup testing
+			const uniqueLicensePlate3 = `TEST_${Math.random().toString(36).slice(2, 8)}`
+			const testCarData3: TestCar = {
+				make: 'Hyundai',
+				model: 'Elantra',
+				color: 'green',
+				license_plate: uniqueLicensePlate3,
+				status: 'PRE_ARRIVAL',
+			}
+			const createdCar3 = await createCar(page, testCarData3)
+			const carId3 = createdCar3.id
+
+			try {
+				// Pickup Phase - Process car directly from PRE_ARRIVAL
+				await page.goto('/pickup')
+
+				// Search for the third created car by ID
+				await page.getByPlaceholder(/enter car id/i).fill(carId3.toString())
+				await page.getByRole('button', { name: /search/i }).click()
+
+				// Verify we're redirected to the car detail page
+				await expect(page).toHaveURL(`/pickup/${carId3}`)
+
+				// Verify car details display correctly
+				await expect(page.getByText('Hyundai')).toBeVisible()
+				await expect(page.getByText('Elantra')).toBeVisible()
+
+				// Click "Skip to Done" button first (since car is in PRE_ARRIVAL status)
+				await page.getByRole('button', { name: /skip to done/i }).click()
+
+				// Verify user is automatically redirected to /pickup
+				await expect(page).toHaveURL('/pickup')
+
+				// Now search again and mark as picked up
+				await page.getByPlaceholder(/enter car id/i).fill(carId3.toString())
+				await page.getByRole('button', { name: /search/i }).click()
+
+				// Click "Mark as Picked Up" button
+				await page.getByRole('button', { name: /mark as picked up/i }).click()
+
+				// Verify user is automatically redirected to /pickup
+				await expect(page).toHaveURL('/pickup')
+			} finally {
+				// Clean up the third car
+				await deleteCar(page, carId3)
+			}
 		})
 	})
 
@@ -394,6 +494,27 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				page,
 			}).analyze()
 			expect(handoffDetailsAccessibilityScanResults.violations).toEqual([])
+		})
+
+		test('Pickup Phase', async ({ page }) => {
+			// Pickup Phase
+			await page.goto('/pickup')
+
+			// Check accessibility with Axe
+			const pickupAccessibilityScanResults = await new AxeBuilder({
+				page,
+			}).analyze()
+			expect(pickupAccessibilityScanResults.violations).toEqual([])
+
+			// Search for the created car by ID to navigate to details page
+			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Check accessibility with Axe
+			const pickupDetailsAccessibilityScanResults = await new AxeBuilder({
+				page,
+			}).analyze()
+			expect(pickupDetailsAccessibilityScanResults.violations).toEqual([])
 		})
 	})
 })

@@ -46,16 +46,12 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
 	// Get the current URL to determine the parent route
 	const url = new URL(request.url)
-	const pathSegments = url.pathname.split('/')
+	const pathSegments = url.pathname.split('/').filter(Boolean) // Remove empty strings
 
-	// Determine the parent route based on the current path
+	// Determine the parent route based on the first path segment
 	let redirectPath = '/'
-	if (pathSegments.includes('registration')) {
-		redirectPath = '/registration'
-	} else if (pathSegments.includes('floor')) {
-		redirectPath = '/floor'
-	} else if (pathSegments.includes('handoff')) {
-		redirectPath = '/handoff'
+	if (pathSegments.length > 0) {
+		redirectPath = `/${pathSegments[0]}`
 	}
 
 	// Redirect back to the appropriate parent route
@@ -118,7 +114,10 @@ function getStatusActions(carStatus: string) {
 			}
 		case 'DONE':
 			return {
-				primary: null, // No primary action for DONE status
+				primary: {
+					targetStatus: 'PICKED_UP',
+					label: 'Mark as Picked Up',
+				},
 				secondary: [
 					{
 						targetStatus: 'PRE_ARRIVAL',
@@ -131,6 +130,28 @@ function getStatusActions(carStatus: string) {
 					{
 						targetStatus: 'ON_DECK',
 						label: 'Return to On Deck',
+					},
+				],
+			}
+		case 'PICKED_UP':
+			return {
+				primary: null, // No primary action for PICKED_UP status
+				secondary: [
+					{
+						targetStatus: 'PRE_ARRIVAL',
+						label: 'Return to Pre-Arrival',
+					},
+					{
+						targetStatus: 'REGISTERED',
+						label: 'Return to Registered',
+					},
+					{
+						targetStatus: 'ON_DECK',
+						label: 'Return to On Deck',
+					},
+					{
+						targetStatus: 'DONE',
+						label: 'Return to Done',
 					},
 				],
 			}
@@ -173,6 +194,13 @@ function getStatusDisplayInfo(status: string) {
 				color: 'text-green-600',
 				bgColor: 'bg-green-100',
 			}
+		case 'PICKED_UP':
+			return {
+				title: 'Picked Up',
+				description: 'Vehicle has been collected by owner',
+				color: 'text-purple-600',
+				bgColor: 'bg-purple-100',
+			}
 		default:
 			return {
 				title: status,
@@ -206,6 +234,11 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 			return {
 				backButtonText: '← Back to Handoff',
 				backButtonHref: '/handoff',
+			}
+		} else if (location.pathname.startsWith('/pickup')) {
+			return {
+				backButtonText: '← Back to Pickup',
+				backButtonHref: '/pickup',
 			}
 		} else {
 			return {

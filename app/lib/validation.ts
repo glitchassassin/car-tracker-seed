@@ -30,7 +30,13 @@ export const carUpdateMessageSchema = z.object({
 
 // Schema for status action validation
 export const statusActionSchema = z.object({
-	targetStatus: z.enum(['PRE_ARRIVAL', 'REGISTERED', 'ON_DECK', 'DONE']),
+	targetStatus: z.enum([
+		'PRE_ARRIVAL',
+		'REGISTERED',
+		'ON_DECK',
+		'DONE',
+		'PICKED_UP',
+	]),
 	referrerPath: z.string().optional().default('/'),
 })
 

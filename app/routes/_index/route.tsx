@@ -46,6 +46,14 @@ export default function Home() {
 					</Link>
 
 					<Link
+						to="/pickup"
+						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-red-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-red-800"
+					>
+						<div>Pickup</div>
+						<div className="text-sm">At the handoff table</div>
+					</Link>
+
+					<Link
 						to="/projector"
 						className="flex min-h-[60px] w-full flex-col items-center justify-center rounded-lg bg-purple-700 p-6 text-center text-lg font-semibold text-white transition-colors hover:bg-purple-800"
 					>

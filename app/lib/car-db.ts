@@ -3,7 +3,12 @@
  * Provides type-safe operations for car data management
  */
 
-export type CarStatus = 'PRE_ARRIVAL' | 'REGISTERED' | 'ON_DECK' | 'DONE'
+export type CarStatus =
+	| 'PRE_ARRIVAL'
+	| 'REGISTERED'
+	| 'ON_DECK'
+	| 'DONE'
+	| 'PICKED_UP'
 
 // Array of all valid car colors
 export const VALID_CAR_COLORS = [
@@ -39,6 +44,7 @@ export interface Car {
 	registered_at: string | null
 	on_deck_at: string | null
 	completed_at: string | null
+	picked_up_at: string | null
 }
 
 export interface CarInput {
@@ -229,6 +235,8 @@ export class CarDB {
 				return 'on_deck_at'
 			case 'DONE':
 				return 'completed_at'
+			case 'PICKED_UP':
+				return 'picked_up_at'
 			default:
 				return null
 		}
@@ -274,6 +282,7 @@ export class CarDB {
 				REGISTERED: 0,
 				ON_DECK: 0,
 				DONE: 0,
+				PICKED_UP: 0,
 			}
 
 			statusResult.results?.forEach((row) => {
