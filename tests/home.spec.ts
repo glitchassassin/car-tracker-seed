@@ -36,7 +36,7 @@ test.describe('Home Page', () => {
 		await page.goto('/')
 
 		// Test Registration link
-		const registrationLink = page.getByRole('link', { name: 'Registration' })
+		const registrationLink = page.getByRole('link', { name: /Registration/i })
 		await expect(registrationLink).toHaveAttribute('href', '/registration')
 
 		// Test Pickup link
@@ -44,7 +44,7 @@ test.describe('Home Page', () => {
 		await expect(pickupLink).toHaveAttribute('href', '/pickup')
 
 		// Test Projector link
-		const projectorLink = page.getByRole('link', { name: 'Projector' })
+		const projectorLink = page.getByRole('link', { name: /Projector/i })
 		await expect(projectorLink).toHaveAttribute('href', '/projector')
 	})
 })
