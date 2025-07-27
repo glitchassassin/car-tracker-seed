@@ -103,7 +103,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			).toBeVisible()
 
 			// Click "Move to Ready for Pickup" button
-			await page.getByRole('button', { name: /move to done/i }).click()
+			await page
+				.getByRole('button', { name: /move to ready for pickup/i })
+				.click()
 
 			// Verify user is automatically redirected to /pickup
 			await expect(page).toHaveURL('/pickup')
@@ -226,7 +228,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Camry')).toBeVisible()
 
 			// Click "Move to Ready for Pickup" button
-			await page.getByRole('button', { name: /move to done/i }).click()
+			await page
+				.getByRole('button', { name: /move to ready for pickup/i })
+				.click()
 
 			// Verify user is automatically redirected to /pickup
 			await expect(page).toHaveURL('/pickup')
@@ -339,7 +343,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Altima')).toBeVisible()
 
 			// Click "Skip to Ready for Pickup" button (since car is in PRE_ARRIVAL status)
-			await page.getByRole('button', { name: /skip to done/i }).click()
+			await page
+				.getByRole('button', { name: /skip to ready for pickup/i })
+				.click()
 
 			// Verify user is automatically redirected to /pickup
 			await expect(page).toHaveURL('/pickup')
@@ -376,7 +382,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				await expect(page.getByText('Elantra')).toBeVisible()
 
 				// Click "Skip to Ready for Pickup" button first (since car is in PRE_ARRIVAL status)
-				await page.getByRole('button', { name: /skip to done/i }).click()
+				await page
+					.getByRole('button', { name: /skip to ready for pickup/i })
+					.click()
 
 				// Verify user is automatically redirected to /pickup
 				await expect(page).toHaveURL('/pickup')

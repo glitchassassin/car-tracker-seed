@@ -55,6 +55,14 @@ export interface CarInput {
 	license_plate: string
 }
 
+export interface StatusHistoryEntry {
+	id: number
+	car_id: number
+	previous_status: string | null
+	new_status: string
+	changed_at: string
+}
+
 /**
  * Car Database Operations
  * Encapsulates all database operations for car data
@@ -147,7 +155,7 @@ export class CarDB {
 	}
 
 	/**
-	 * Update car status with timestamp tracking
+	 * Update car status with timestamp tracking and history logging
 	 */
 	async updateCarStatus(id: number, newStatus: CarStatus): Promise<Car | null> {
 		// Get the current car to capture the old status
@@ -158,24 +166,33 @@ export class CarDB {
 		const currentTime = new Date().toISOString()
 
 		try {
-			// Update status and appropriate timestamp
-			let query = 'UPDATE cars SET status = ?'
-			let params: any[] = [newStatus]
+			// Use D1's batch API to ensure both updates happen atomically
+			const result = await this.db.batch([
+				// Update status and appropriate timestamp
+				(() => {
+					let query = 'UPDATE cars SET status = ?'
+					let params: any[] = [newStatus]
 
-			if (timestampField) {
-				query += `, ${timestampField} = ?`
-				params.push(currentTime)
-			}
+					if (timestampField) {
+						query += `, ${timestampField} = ?`
+						params.push(currentTime)
+					}
 
-			query += ' WHERE id = ?'
-			params.push(id)
+					query += ' WHERE id = ?'
+					params.push(id)
 
-			const updateResult = await this.db
-				.prepare(query)
-				.bind(...params)
-				.run()
+					return this.db.prepare(query).bind(...params)
+				})(),
+				// Insert status history record
+				this.db
+					.prepare(
+						'INSERT INTO status_history (car_id, previous_status, new_status, changed_at) VALUES (?, ?, ?, ?)',
+					)
+					.bind(id, oldStatus, newStatus, currentTime),
+			])
 
-			if (updateResult.meta.changes === 0) {
+			// Check if the car update was successful
+			if (result[0].meta.changes === 0) {
 				return null // Car not found
 			}
 
@@ -296,6 +313,68 @@ export class CarDB {
 		} catch (error) {
 			console.error('Error fetching car statistics:', error)
 			throw new Error('Failed to fetch car statistics')
+		}
+	}
+
+	/**
+	 * Get status history for a specific car
+	 */
+	async getStatusHistory(carId: number): Promise<StatusHistoryEntry[]> {
+		try {
+			const result = await this.db
+				.prepare(
+					'SELECT * FROM status_history WHERE car_id = ? ORDER BY changed_at DESC',
+				)
+				.bind(carId)
+				.all<StatusHistoryEntry>()
+
+			return result.results || []
+		} catch (error) {
+			console.error('Error fetching status history:', error)
+			throw new Error(`Failed to fetch status history for car ${carId}`)
+		}
+	}
+
+	/**
+	 * Get recent status changes across all cars
+	 */
+	async getRecentStatusChanges(
+		limit: number = 50,
+	): Promise<StatusHistoryEntry[]> {
+		try {
+			const result = await this.db
+				.prepare(
+					'SELECT * FROM status_history ORDER BY changed_at DESC LIMIT ?',
+				)
+				.bind(limit)
+				.all<StatusHistoryEntry>()
+
+			return result.results || []
+		} catch (error) {
+			console.error('Error fetching recent status changes:', error)
+			throw new Error('Failed to fetch recent status changes')
+		}
+	}
+
+	/**
+	 * Get status changes for a specific time period
+	 */
+	async getStatusChangesByDateRange(
+		startDate: string,
+		endDate: string,
+	): Promise<StatusHistoryEntry[]> {
+		try {
+			const result = await this.db
+				.prepare(
+					'SELECT * FROM status_history WHERE changed_at BETWEEN ? AND ? ORDER BY changed_at DESC',
+				)
+				.bind(startDate, endDate)
+				.all<StatusHistoryEntry>()
+
+			return result.results || []
+		} catch (error) {
+			console.error('Error fetching status changes by date range:', error)
+			throw new Error('Failed to fetch status changes by date range')
 		}
 	}
 
