@@ -21,8 +21,10 @@ export async function loader({ context }: Route.LoaderArgs) {
 export default function Projector({ loaderData }: Route.ComponentProps) {
 	const { inProgressCars, doneCars } = loaderData
 
-	// Listen for real-time updates on all status changes
-	useRevalidateOnCarUpdates()
+	// Listen for real-time updates on status changes relevant to projector view
+	useRevalidateOnCarUpdates({
+		statusFilter: ['REGISTERED', 'ON_DECK', 'DONE'],
+	})
 
 	return (
 		<main className="min-h-screen bg-gray-900 p-8">

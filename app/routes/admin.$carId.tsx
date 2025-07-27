@@ -1,27 +1,12 @@
 import { parseWithZod } from '@conform-to/zod'
 import { Link, redirect } from 'react-router'
+import { useRevalidateOnCarUpdates } from '../hooks/useRevalidateOnCarUpdates'
 import { statusActionSchema } from '../lib/validation'
+import type { Route } from './+types/admin.$carId'
 import { COLOR_CLASSES } from '~/components/CarCard'
-import type { CarStatus, StatusHistoryEntry } from '~/lib/car-db'
+import type { CarStatus } from '~/lib/car-db'
 
-// Temporary type until React Router generates the types
-type Route = {
-	MetaArgs: any
-	LoaderArgs: { context: { carDB: any }; params: { carId: string } }
-	ActionArgs: {
-		context: { carDB: any }
-		params: { carId: string }
-		request: Request
-	}
-	ComponentProps: {
-		loaderData: {
-			car: import('~/lib/car-db').Car
-			statusHistory: StatusHistoryEntry[]
-		}
-	}
-}
-
-export function meta({}: Route['MetaArgs']) {
+export function meta() {
 	return [
 		{ title: 'Admin Car Details - Car Tracker' },
 		{
@@ -31,7 +16,7 @@ export function meta({}: Route['MetaArgs']) {
 	]
 }
 
-export async function loader({ context, params }: Route['LoaderArgs']) {
+export async function loader({ context, params }: Route.LoaderArgs) {
 	const carId = parseInt(params.carId, 10)
 
 	if (isNaN(carId)) {
@@ -49,11 +34,7 @@ export async function loader({ context, params }: Route['LoaderArgs']) {
 	return { car, statusHistory }
 }
 
-export async function action({
-	context,
-	params,
-	request,
-}: Route['ActionArgs']) {
+export async function action({ context, params, request }: Route.ActionArgs) {
 	const carId = parseInt(params.carId, 10)
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, { schema: statusActionSchema })
@@ -241,12 +222,15 @@ function formatDate(dateString: string) {
 	return new Date(dateString).toLocaleString()
 }
 
-export default function AdminCarDetail({
-	loaderData,
-}: Route['ComponentProps']) {
+export default function AdminCarDetail({ loaderData }: Route.ComponentProps) {
 	const { car, statusHistory } = loaderData
 	const statusActions = getStatusActions(car.status)
 	const statusInfo = getStatusDisplayInfo(car.status)
+
+	// Listen for real-time updates on this specific car's status changes
+	useRevalidateOnCarUpdates({
+		carIdFilter: car.id,
+	})
 
 	return (
 		<main className="min-h-screen p-4">

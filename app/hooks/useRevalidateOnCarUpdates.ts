@@ -5,10 +5,10 @@ import type { CarStatus } from '../lib/car-db'
 
 interface UseRevalidateOnCarUpdatesOptions {
 	/**
-	 * Status to listen for. If provided, only updates involving this status will trigger revalidation.
+	 * Statuses to listen for. If provided, only updates involving any of these statuses will trigger revalidation.
 	 * Can be either the old or new status in the update.
 	 */
-	statusFilter?: CarStatus
+	statusFilter?: CarStatus[]
 	/**
 	 * Specific car ID to listen for. If provided, only updates for this car will trigger revalidation.
 	 */
@@ -36,8 +36,8 @@ export function useRevalidateOnCarUpdates(
 			// Check if this update matches our filters
 			const matchesStatus =
 				!statusFilter ||
-				update.oldStatus === statusFilter ||
-				update.newStatus === statusFilter
+				statusFilter.includes(update.oldStatus as CarStatus) ||
+				statusFilter.includes(update.newStatus as CarStatus)
 
 			const matchesCarId = !carIdFilter || update.carId === carIdFilter
 

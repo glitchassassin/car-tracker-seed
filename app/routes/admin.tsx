@@ -1,16 +1,10 @@
 import { Link } from 'react-router'
+import type { Route } from './+types/admin'
 import { CarCard } from '~/components/CarCard'
 import { useRevalidateOnCarUpdates } from '~/hooks/useRevalidateOnCarUpdates'
 import type { CarStatus, Car } from '~/lib/car-db'
 
-// Temporary type until React Router generates the types
-type Route = {
-	MetaArgs: any
-	LoaderArgs: { context: { carDB: any } }
-	ComponentProps: { loaderData: { carsByStatus: Record<CarStatus, Car[]> } }
-}
-
-export function meta({}: Route['MetaArgs']) {
+export function meta({}: Route.MetaArgs) {
 	return [
 		{ title: 'Admin Dashboard - Car Tracker' },
 		{
@@ -20,7 +14,7 @@ export function meta({}: Route['MetaArgs']) {
 	]
 }
 
-export async function loader({ context }: Route['LoaderArgs']) {
+export async function loader({ context }: Route.LoaderArgs) {
 	// Get all cars and organize them by status
 	const allCars = await context.carDB.getAllCars()
 
@@ -88,7 +82,7 @@ function getStatusDisplayInfo(status: CarStatus) {
 
 export default function Admin({
 	loaderData: { carsByStatus },
-}: Route['ComponentProps']) {
+}: Route.ComponentProps) {
 	// Listen for real-time updates on all status changes
 	useRevalidateOnCarUpdates()
 

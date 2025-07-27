@@ -43,8 +43,10 @@ export async function loader({ context }: Route.LoaderArgs) {
 export default function Registration({ loaderData }: Route.ComponentProps) {
 	const { preArrivalCars, registeredCars } = loaderData
 
-	// Listen for real-time updates on all status changes
-	useRevalidateOnCarUpdates()
+	// Listen for real-time updates on PRE_ARRIVAL and REGISTERED status changes
+	useRevalidateOnCarUpdates({
+		statusFilter: ['PRE_ARRIVAL', 'REGISTERED'],
+	})
 
 	return (
 		<main className="min-h-screen p-4">

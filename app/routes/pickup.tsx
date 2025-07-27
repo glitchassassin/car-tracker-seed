@@ -43,8 +43,10 @@ export async function loader({ context }: Route.LoaderArgs) {
 export default function Pickup({ loaderData }: Route.ComponentProps) {
 	const { onDeckCars, doneCars } = loaderData
 
-	// Listen for real-time updates on all status changes
-	useRevalidateOnCarUpdates()
+	// Listen for real-time updates on ON_DECK and DONE status changes
+	useRevalidateOnCarUpdates({
+		statusFilter: ['ON_DECK', 'DONE'],
+	})
 
 	return (
 		<main className="min-h-screen p-4">

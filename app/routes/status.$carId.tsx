@@ -1,6 +1,7 @@
 import { parseWithZod } from '@conform-to/zod'
 import { useMemo } from 'react'
 import { Link, redirect, useLocation } from 'react-router'
+import { useRevalidateOnCarUpdates } from '../hooks/useRevalidateOnCarUpdates'
 import { statusActionSchema } from '../lib/validation'
 import type { Route } from './+types/status.$carId'
 import { COLOR_CLASSES } from '~/components/CarCard'
@@ -226,6 +227,11 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 	const statusInfo = getStatusDisplayInfo(car.status)
 
 	const location = useLocation()
+
+	// Listen for real-time updates on this specific car's status changes
+	useRevalidateOnCarUpdates({
+		carIdFilter: car.id,
+	})
 
 	// Determine back button text based on referrer
 	const { backButtonText, backButtonHref } = useMemo(() => {
