@@ -102,7 +102,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				page.getByTestId(`car-${carId}`).getByText('Civic'),
 			).toBeVisible()
 
-			// Click "Move to Done" button
+			// Click "Move to Ready for Pickup" button
 			await page.getByRole('button', { name: /move to done/i }).click()
 
 			// Verify user is automatically redirected to /pickup
@@ -225,7 +225,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
 
-			// Click "Move to Done" button
+			// Click "Move to Ready for Pickup" button
 			await page.getByRole('button', { name: /move to done/i }).click()
 
 			// Verify user is automatically redirected to /pickup
@@ -338,7 +338,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Nissan')).toBeVisible()
 			await expect(page.getByText('Altima')).toBeVisible()
 
-			// Click "Skip to Done" button (since car is in PRE_ARRIVAL status)
+			// Click "Skip to Ready for Pickup" button (since car is in PRE_ARRIVAL status)
 			await page.getByRole('button', { name: /skip to done/i }).click()
 
 			// Verify user is automatically redirected to /pickup
@@ -375,7 +375,7 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				await expect(page.getByText('Hyundai')).toBeVisible()
 				await expect(page.getByText('Elantra')).toBeVisible()
 
-				// Click "Skip to Done" button first (since car is in PRE_ARRIVAL status)
+				// Click "Skip to Ready for Pickup" button first (since car is in PRE_ARRIVAL status)
 				await page.getByRole('button', { name: /skip to done/i }).click()
 
 				// Verify user is automatically redirected to /pickup

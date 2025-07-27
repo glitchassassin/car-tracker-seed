@@ -59,7 +59,7 @@ export default function Registration({ loaderData }: Route.ComponentProps) {
 						</Link>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">
-						Registration & Floor
+						Registration
 					</h1>
 					<p className="text-gray-600">
 						Manage cars for registration and floor entry
@@ -77,7 +77,7 @@ export default function Registration({ loaderData }: Route.ComponentProps) {
 					{/* Pre-Arrival Column */}
 					<section className="space-y-4">
 						<h2 className="text-xl font-semibold text-gray-900">
-							Pre-Arrival Cars ({preArrivalCars.length})
+							Pre-Arrival ({preArrivalCars.length})
 						</h2>
 						<p className="text-sm text-gray-600">
 							Update car to Registered when it has arrived and completed
@@ -104,7 +104,7 @@ export default function Registration({ loaderData }: Route.ComponentProps) {
 					{/* Registered Column */}
 					<section className="space-y-4">
 						<h2 className="text-xl font-semibold text-gray-900">
-							Registered Cars ({registeredCars.length})
+							Registered ({registeredCars.length})
 						</h2>
 						<p className="text-sm text-gray-600">
 							Update car to On Deck when it is entering the floor for service

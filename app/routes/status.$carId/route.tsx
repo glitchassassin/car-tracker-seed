@@ -71,7 +71,7 @@ function getStatusActions(carStatus: string) {
 					},
 					{
 						targetStatus: 'DONE',
-						label: 'Skip to Done',
+						label: 'Skip to Ready for Pickup',
 					},
 					{
 						targetStatus: 'PICKED_UP',
@@ -92,7 +92,7 @@ function getStatusActions(carStatus: string) {
 					},
 					{
 						targetStatus: 'DONE',
-						label: 'Skip to Done',
+						label: 'Skip to Ready for Pickup',
 					},
 					{
 						targetStatus: 'PICKED_UP',
@@ -104,7 +104,7 @@ function getStatusActions(carStatus: string) {
 			return {
 				primary: {
 					targetStatus: 'DONE',
-					label: 'Move to Done',
+					label: 'Move to Ready for Pickup',
 				},
 				secondary: [
 					{
@@ -160,7 +160,7 @@ function getStatusActions(carStatus: string) {
 					},
 					{
 						targetStatus: 'DONE',
-						label: 'Return to Done',
+						label: 'Return to Ready for Pickup',
 					},
 				],
 			}
@@ -198,7 +198,7 @@ function getStatusDisplayInfo(status: string) {
 			}
 		case 'DONE':
 			return {
-				title: 'Done',
+				title: 'Ready for Pickup',
 				description: 'Service is complete',
 				color: 'text-green-600',
 				bgColor: 'bg-green-100',

@@ -75,11 +75,11 @@ export default function Pickup({ loaderData }: Route.ComponentProps) {
 					{/* On Deck Column */}
 					<section className="space-y-4">
 						<h2 className="text-xl font-semibold text-gray-900">
-							On Deck Cars ({onDeckCars.length})
+							On Deck ({onDeckCars.length})
 						</h2>
 						<p className="text-sm text-gray-600">
-							Update car to Done when it is complete and ready to hand off to
-							the owner
+							Update car to Ready for Pickup when it is complete and ready to
+							hand off to the owner
 						</p>
 
 						{onDeckCars.length === 0 ? (
@@ -95,10 +95,10 @@ export default function Pickup({ loaderData }: Route.ComponentProps) {
 						)}
 					</section>
 
-					{/* Done Column */}
+					{/* Ready for Pickup Column */}
 					<section className="space-y-4">
 						<h2 className="text-xl font-semibold text-gray-900">
-							Done Cars ({doneCars.length})
+							Ready for Pickup ({doneCars.length})
 						</h2>
 						<p className="text-sm text-gray-600">
 							Update car to Picked Up when the owner has collected their vehicle

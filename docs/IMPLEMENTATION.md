@@ -65,10 +65,10 @@ No e2e test needed here
 
 ## Phase 2: Core Status Tracking & Volunteer Interfaces
 
-Implement the four-status workflow (Pre-Arrival → Registered → On Deck → Done)
-with mobile-optimized volunteer interfaces. This combines the core business
-logic with the user interfaces needed to test and validate the status tracking
-system.
+Implement the four-status workflow (Pre-Arrival → Registered → On Deck → Ready
+for Pickup) with mobile-optimized volunteer interfaces. This combines the core
+business logic with the user interfaces needed to test and validate the status
+tracking system.
 
 Create shared components that can be reused across multiple screens.
 

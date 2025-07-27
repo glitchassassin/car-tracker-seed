@@ -56,10 +56,10 @@ export default function Projector({ loaderData }: Route.ComponentProps) {
 						)}
 					</section>
 
-					{/* Done Section */}
+					{/* Ready for Pickup Section */}
 					<section className="space-y-4">
 						<h2 className="text-3xl font-bold text-green-400">
-							Done ({doneCars.length})
+							Ready for Pickup ({doneCars.length})
 						</h2>
 
 						{doneCars.length === 0 ? (
