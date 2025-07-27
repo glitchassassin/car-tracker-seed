@@ -332,7 +332,7 @@ export default function AdminCarDetail({ loaderData }: Route.ComponentProps) {
 
 									return (
 										<div key={entry.id} className="p-4">
-											<div className="flex items-center justify-between">
+											<div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
 												<div className="flex items-center space-x-3">
 													{previousStatusInfo ? (
 														<>
@@ -354,7 +354,7 @@ export default function AdminCarDetail({ loaderData }: Route.ComponentProps) {
 														</span>
 													</span>
 												</div>
-												<div className="text-sm text-gray-500">
+												<div className="text-sm text-gray-500 sm:text-right">
 													{formatDate(entry.changed_at)}
 												</div>
 											</div>
