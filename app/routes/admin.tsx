@@ -1,8 +1,11 @@
-import { Link } from 'react-router'
+import { parseWithZod } from '@conform-to/zod'
+import { Link, redirect } from 'react-router'
 import type { Route } from './+types/admin'
 import { CarCard } from '~/components/CarCard'
+import { SearchForm } from '~/components/SearchForm'
 import { useRevalidateOnCarUpdates } from '~/hooks/useRevalidateOnCarUpdates'
 import type { CarStatus, Car } from '~/lib/car-db'
+import { carLookupSchema } from '~/lib/validation'
 
 export function meta({}: Route.MetaArgs) {
 	return [
@@ -32,6 +35,30 @@ export async function loader({ context }: Route.LoaderArgs) {
 	})
 
 	return { carsByStatus }
+}
+
+export async function action({ request, context }: Route.ActionArgs) {
+	const formData = await request.formData()
+	const submission = parseWithZod(formData, { schema: carLookupSchema })
+
+	if (submission.status !== 'success') {
+		return submission.reply()
+	}
+
+	const { searchTerm } = submission.value
+
+	// Search for the car by ID or license plate
+	const car = await context.carDB.searchCarByIdOrLicensePlate(searchTerm)
+
+	if (!car) {
+		// Return an error if no car is found
+		return submission.reply({
+			formErrors: ['No car found with that ID or license plate'],
+		})
+	}
+
+	// Redirect to the admin detail page for the found car
+	throw redirect(`/admin/${car.id}`)
 }
 
 // Helper function to get status display info
@@ -82,6 +109,7 @@ function getStatusDisplayInfo(status: CarStatus) {
 
 export default function Admin({
 	loaderData: { carsByStatus },
+	actionData,
 }: Route.ComponentProps) {
 	// Listen for real-time updates on all status changes
 	useRevalidateOnCarUpdates()
@@ -106,6 +134,15 @@ export default function Admin({
 						All vehicles organized by current status
 					</p>
 				</header>
+
+				{/* Search Section */}
+				<section className="space-y-4">
+					<h2 className="text-xl font-semibold text-gray-900">Look Up Car</h2>
+					<SearchForm
+						placeholder="Enter car ID or license plate..."
+						lastResult={actionData}
+					/>
+				</section>
 
 				{/* Summary Stats */}
 				<div className="mt-8 rounded-lg bg-gray-50 p-6">

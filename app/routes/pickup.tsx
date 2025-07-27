@@ -16,7 +16,7 @@ export function meta({}: Route.MetaArgs) {
 	]
 }
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, { schema: carLookupSchema })
 
@@ -24,8 +24,20 @@ export async function action({ request }: Route.ActionArgs) {
 		return submission.reply()
 	}
 
-	// Redirect to the unified status page
-	return redirect(`/pickup/${submission.value.carId}`)
+	const { searchTerm } = submission.value
+
+	// Search for the car by ID or license plate
+	const car = await context.carDB.searchCarByIdOrLicensePlate(searchTerm)
+
+	if (!car) {
+		// Return an error if no car is found
+		return submission.reply({
+			formErrors: ['No car found with that ID or license plate'],
+		})
+	}
+
+	// Redirect to the pickup detail page for the found car
+	throw redirect(`/pickup/${car.id}`)
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -40,7 +52,10 @@ export async function loader({ context }: Route.LoaderArgs) {
 	}
 }
 
-export default function Pickup({ loaderData }: Route.ComponentProps) {
+export default function Pickup({
+	loaderData,
+	actionData,
+}: Route.ComponentProps) {
 	const { onDeckCars, doneCars } = loaderData
 
 	// Listen for real-time updates on ON_DECK and DONE status changes
@@ -69,7 +84,10 @@ export default function Pickup({ loaderData }: Route.ComponentProps) {
 				{/* Search Section */}
 				<section className="space-y-4">
 					<h2 className="text-xl font-semibold text-gray-900">Look Up Car</h2>
-					<SearchForm placeholder="Enter car ID..." />
+					<SearchForm
+						placeholder="Enter car ID or license plate..."
+						lastResult={actionData}
+					/>
 				</section>
 
 				{/* Two Column Layout */}

@@ -19,8 +19,9 @@ so we want to have as few as possible while covering the important features.
 Remember to check accessibility with Axe on new pages.
 
 Note that test data is NOT reset between runs, so you MUST be careful to use
-different test data in each test. Another good reason to minimize the number of
-e2e tests you write.
+different test data in each test. Wrap individual tests in a `describe` block
+with beforeAll and afterAll hooks to set up and clean up the data. This is
+another good reason to minimize the number of e2e tests you write.
 
 ## Components
 

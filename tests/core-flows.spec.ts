@@ -171,7 +171,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('link', { name: /registration/i }).click()
 
 			// Search for the created car by ID
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
@@ -194,7 +196,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('link', { name: /registration/i }).click()
 
 			// Search for the created car by ID
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
@@ -217,7 +221,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('link', { name: /At the pickup table/i }).click()
 
 			// Search for the created car by ID
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
@@ -242,7 +248,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.getByRole('link', { name: /At the pickup table/i }).click()
 
 			// Search for the created car by ID
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
@@ -251,6 +259,138 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			// Verify car details display correctly
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
+
+			// Click "Mark as Picked Up" button
+			await page.getByRole('button', { name: /mark as picked up/i }).click()
+
+			// Verify user is automatically redirected to /pickup
+			await expect(page).toHaveURL('/pickup')
+		})
+	})
+
+	test.describe('Test Plan 2.5: License Plate Search', () => {
+		let carId: number
+		let licensePlate: string
+
+		test.beforeAll(async ({ browser }) => {
+			const page = await browser.newPage()
+			licensePlate = `ABC${Math.random().toString(36).slice(2, 6).toUpperCase()}`
+			const testCarData: TestCar = {
+				make: 'BMW',
+				model: 'X3',
+				color: 'black',
+				license_plate: licensePlate,
+				status: 'PRE_ARRIVAL',
+			}
+
+			const createdCar = await createCar(page, testCarData)
+			carId = createdCar.id
+			await page.close()
+		})
+
+		test.afterAll(async ({ browser }) => {
+			const page = await browser.newPage()
+			await deleteCar(page, carId)
+			await page.close()
+		})
+
+		test('Car Journey Flow via License Plate Search', async ({ page }) => {
+			// Registration Phase
+			await page.goto('/')
+
+			// Select Registration mode
+			await page.getByRole('link', { name: /registration/i }).click()
+
+			// Search for the created car by license plate
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(licensePlate)
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/registration/${carId}`)
+
+			// Verify car details display correctly
+			await expect(page.getByText('BMW')).toBeVisible()
+			await expect(page.getByText('X3')).toBeVisible()
+			await expect(page.getByText(licensePlate)).toBeVisible()
+
+			// Click "Move to Registered" button
+			await page.getByRole('button', { name: /move to registered/i }).click()
+
+			// Verify user is automatically redirected to /registration
+			await expect(page).toHaveURL('/registration')
+
+			// Floor Phase
+			await page.goto('/')
+
+			// Select Registration mode
+			await page.getByRole('link', { name: /registration/i }).click()
+
+			// Search for the created car by license plate
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(licensePlate)
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/registration/${carId}`)
+
+			// Verify car details display correctly
+			await expect(page.getByText('BMW')).toBeVisible()
+			await expect(page.getByText('X3')).toBeVisible()
+
+			// Click "Move to On Deck" button
+			await page.getByRole('button', { name: /move to on deck/i }).click()
+
+			// Verify user is automatically redirected to /registration
+			await expect(page).toHaveURL('/registration')
+
+			// Handoff Phase
+			await page.goto('/')
+
+			// Select Handoff mode
+			await page.getByRole('link', { name: /At the pickup table/i }).click()
+
+			// Search for the created car by license plate
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(licensePlate)
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/pickup/${carId}`)
+
+			// Verify car details display correctly
+			await expect(page.getByText('BMW')).toBeVisible()
+			await expect(page.getByText('X3')).toBeVisible()
+
+			// Click "Move to Ready for Pickup" button
+			await page
+				.getByRole('button', { name: /move to ready for pickup/i })
+				.click()
+
+			// Verify user is automatically redirected to /pickup
+			await expect(page).toHaveURL('/pickup')
+
+			// Pickup Phase
+			await page.goto('/')
+
+			// Select Pickup mode
+			await page.getByRole('link', { name: /At the pickup table/i }).click()
+
+			// Search for the created car by license plate
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(licensePlate)
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we're redirected to the car detail page
+			await expect(page).toHaveURL(`/pickup/${carId}`)
+
+			// Verify car details display correctly
+			await expect(page.getByText('BMW')).toBeVisible()
+			await expect(page.getByText('X3')).toBeVisible()
 
 			// Click "Mark as Picked Up" button
 			await page.getByRole('button', { name: /mark as picked up/i }).click()
@@ -308,7 +448,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.goto('/registration')
 
 			// Search for the first created car by ID
-			await page.getByPlaceholder(/enter car id/i).fill(carId1.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId1.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
@@ -332,7 +474,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await page.goto('/pickup')
 
 			// Search for the second created car by ID
-			await page.getByPlaceholder(/enter car id/i).fill(carId2.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId2.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Verify we're redirected to the car detail page
@@ -371,7 +515,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				await page.goto('/pickup')
 
 				// Search for the third created car by ID
-				await page.getByPlaceholder(/enter car id/i).fill(carId3.toString())
+				await page
+					.getByPlaceholder(/enter car id or license plate/i)
+					.fill(carId3.toString())
 				await page.getByRole('button', { name: /search/i }).click()
 
 				// Verify we're redirected to the car detail page
@@ -390,7 +536,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				await expect(page).toHaveURL('/pickup')
 
 				// Now search again and mark as picked up
-				await page.getByPlaceholder(/enter car id/i).fill(carId3.toString())
+				await page
+					.getByPlaceholder(/enter car id or license plate/i)
+					.fill(carId3.toString())
 				await page.getByRole('button', { name: /search/i }).click()
 
 				// Click "Mark as Picked Up" button
@@ -452,7 +600,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			expect(registrationAccessibilityScanResults.violations).toEqual([])
 
 			// Search for the created car by ID to navigate to details page
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Check accessibility with Axe
@@ -473,7 +623,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			expect(floorAccessibilityScanResults.violations).toEqual([])
 
 			// Search for the created car by ID to navigate to details page
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Check accessibility with Axe
@@ -494,7 +646,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			expect(handoffAccessibilityScanResults.violations).toEqual([])
 
 			// Search for the created car by ID to navigate to details page
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Check accessibility with Axe
@@ -515,7 +669,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			expect(pickupAccessibilityScanResults.violations).toEqual([])
 
 			// Search for the created car by ID to navigate to details page
-			await page.getByPlaceholder(/enter car id/i).fill(carId.toString())
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
 			await page.getByRole('button', { name: /search/i }).click()
 
 			// Check accessibility with Axe
@@ -523,6 +679,90 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				page,
 			}).analyze()
 			expect(pickupDetailsAccessibilityScanResults.violations).toEqual([])
+		})
+	})
+
+	test.describe('Test Plan 5: Admin Search Functionality', () => {
+		let carId: number
+		let licensePlate: string
+
+		test.beforeAll(async ({ browser }) => {
+			const page = await browser.newPage()
+			licensePlate = `ADMIN${Math.random().toString(36).slice(2, 6).toUpperCase()}`
+			const testCarData: TestCar = {
+				make: 'Mercedes',
+				model: 'C-Class',
+				color: 'silver',
+				license_plate: licensePlate,
+				status: 'PRE_ARRIVAL',
+			}
+
+			const createdCar = await createCar(page, testCarData)
+			carId = createdCar.id
+			await page.close()
+		})
+
+		test.afterAll(async ({ browser }) => {
+			const page = await browser.newPage()
+			await deleteCar(page, carId)
+			await page.close()
+		})
+
+		test('Admin Search by Car ID', async ({ page }) => {
+			// Navigate to admin dashboard
+			await page.goto('/admin')
+
+			// Search for the car by ID
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(carId.toString())
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we're redirected to the admin car detail page
+			await expect(page).toHaveURL(`/admin/${carId}`)
+
+			// Verify car details display correctly
+			await expect(page.getByText('Mercedes')).toBeVisible()
+			await expect(page.getByText('C-Class')).toBeVisible()
+			await expect(page.getByText(licensePlate)).toBeVisible()
+		})
+
+		test('Admin Search by License Plate', async ({ page }) => {
+			// Navigate to admin dashboard
+			await page.goto('/admin')
+
+			// Search for the car by license plate
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill(licensePlate)
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we're redirected to the admin car detail page
+			await expect(page).toHaveURL(`/admin/${carId}`)
+
+			// Verify car details display correctly
+			await expect(page.getByText('Mercedes')).toBeVisible()
+			await expect(page.getByText('C-Class')).toBeVisible()
+			await expect(page.getByText(licensePlate)).toBeVisible()
+		})
+
+		test('Admin Search - Non-existent Car', async ({ page }) => {
+			// Navigate to admin dashboard
+			await page.goto('/admin')
+
+			// Search for a non-existent car
+			await page
+				.getByPlaceholder(/enter car id or license plate/i)
+				.fill('999999')
+			await page.getByRole('button', { name: /search/i }).click()
+
+			// Verify we stay on the admin page (no redirect)
+			await expect(page).toHaveURL('/admin')
+
+			// Verify error message is displayed
+			await expect(
+				page.getByText('No car found with that ID or license plate'),
+			).toBeVisible()
 		})
 	})
 })

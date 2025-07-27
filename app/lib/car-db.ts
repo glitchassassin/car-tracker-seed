@@ -279,6 +279,40 @@ export class CarDB {
 	}
 
 	/**
+	 * Search for cars by ID or license plate
+	 * Returns the first matching car or null if not found
+	 */
+	async searchCarByIdOrLicensePlate(searchTerm: string): Promise<Car | null> {
+		try {
+			// Strip whitespace from search term
+			const cleanSearchTerm = searchTerm.trim()
+
+			// Only treat as ID if the search term is purely numeric
+			if (/^\d+$/.test(cleanSearchTerm)) {
+				const parsedId = parseInt(cleanSearchTerm, 10)
+				// Search by ID first (exact match)
+				const car = await this.getCarById(parsedId)
+				if (car) {
+					return car
+				}
+			}
+
+			// If not found by ID or search term is not purely numeric, search by license plate (exact match)
+			const result = await this.db
+				.prepare(
+					'SELECT * FROM cars WHERE license_plate = ? ORDER BY id ASC LIMIT 1',
+				)
+				.bind(cleanSearchTerm)
+				.first<Car>()
+
+			return result || null
+		} catch (error) {
+			console.error('Error searching car by ID or license plate:', error)
+			throw new Error(`Failed to search car with term ${searchTerm}`)
+		}
+	}
+
+	/**
 	 * Get car statistics for reporting
 	 */
 	async getCarStatistics(): Promise<{

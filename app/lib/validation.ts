@@ -1,6 +1,17 @@
 import { z } from 'zod'
 
-// Schema for car ID validation
+// Schema for car search validation (supports both ID and license plate)
+export const carSearchSchema = z.object({
+	searchTerm: z
+		.string()
+		.min(1, 'Search term is required')
+		.transform((val) => val.trim())
+		.refine((val) => val.length > 0, {
+			message: 'Search term cannot be empty',
+		}),
+})
+
+// Schema for car ID validation (kept for backward compatibility)
 export const carIdSchema = z.object({
 	carId: z
 		.string()
@@ -51,9 +62,10 @@ export const sqlQuerySchema = z.object({
 })
 
 // Combined schema for car lookup forms (used in registration, floor, handoff routes)
-export const carLookupSchema = carIdSchema
+export const carLookupSchema = carSearchSchema
 
 // Type exports for use in components
+export type CarSearchFormData = z.infer<typeof carSearchSchema>
 export type CarIdFormData = z.infer<typeof carIdSchema>
 export type StatusActionFormData = z.infer<typeof statusActionSchema>
 export type SqlQueryFormData = z.infer<typeof sqlQuerySchema>
