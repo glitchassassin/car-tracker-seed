@@ -6,6 +6,7 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from 'react-router'
+import { ClientOnly } from 'remix-utils/client-only'
 
 import type { Route } from './+types/root'
 import { ConnectionStatus } from './components/ConnectionStatus'
@@ -46,7 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 	return (
 		<CarUpdatesProvider>
-			<ConnectionStatus />
+			<ClientOnly>{() => <ConnectionStatus />}</ClientOnly>
 			<Outlet />
 		</CarUpdatesProvider>
 	)

@@ -1,45 +1,33 @@
 import { useCarUpdatesContext } from '../contexts/CarUpdatesContext'
+import { useNetworkStatus } from '../hooks/useNetworkStatus'
 
 export function ConnectionStatus() {
-	const { connectionStatus, isConnected } = useCarUpdatesContext()
+	const { connectionStatus } = useCarUpdatesContext()
+	const isOnline = useNetworkStatus()
 
-	// Only show when there are connection issues
-	if (connectionStatus === 'connected' && isConnected) {
+	// Show when there are connection issues or when offline
+	if (connectionStatus === 'connected' && isOnline) {
 		return null
 	}
 
 	const getStatusText = () => {
+		if (!isOnline) {
+			return 'No Internet Connection'
+		}
+
 		switch (connectionStatus) {
 			case 'connecting':
 				return 'Connecting...'
-			case 'connected':
-				return 'Connected'
 			case 'disconnected':
 				return 'Disconnected'
-			case 'reconnecting':
-				return 'Reconnecting...'
 			default:
 				return 'Unknown'
 		}
 	}
 
-	const getStatusColor = () => {
-		switch (connectionStatus) {
-			case 'connecting':
-			case 'reconnecting':
-				return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-			case 'connected':
-				return 'bg-green-100 text-green-800 border-green-200'
-			case 'disconnected':
-				return 'bg-red-100 text-red-800 border-red-200'
-			default:
-				return 'bg-gray-100 text-gray-800 border-gray-200'
-		}
-	}
-
 	return (
 		<div
-			className={`fixed top-4 right-4 rounded-lg border px-3 py-2 text-sm font-medium ${getStatusColor()} z-50`}
+			className={`fixed top-4 right-4 z-50 rounded-lg border border-red-200 bg-red-100 px-3 py-2 text-sm font-medium text-red-800`}
 			role="status"
 			aria-live="polite"
 			aria-label="Connection status"

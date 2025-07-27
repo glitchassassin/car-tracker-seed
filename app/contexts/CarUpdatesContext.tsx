@@ -18,8 +18,7 @@ interface CarUpdateEvent {
 
 interface CarUpdatesContextType {
 	subscribe: (callback: (update: CarUpdateEvent) => void) => () => void
-	isConnected: boolean
-	connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+	connectionStatus: 'connecting' | 'connected' | 'disconnected'
 }
 
 const CarUpdatesContext = createContext<CarUpdatesContextType | null>(null)
@@ -29,9 +28,8 @@ interface CarUpdatesProviderProps {
 }
 
 export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
-	const [isConnected, setIsConnected] = useState(false)
 	const [connectionStatus, setConnectionStatus] = useState<
-		'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+		'connecting' | 'connected' | 'disconnected'
 	>('connecting')
 	const wsRef = useRef<WebSocket | null>(null)
 	const reconnectTimeoutRef = useRef<number | null>(null)
@@ -50,7 +48,6 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 
 			ws.onopen = () => {
 				console.log('Connected to car updates WebSocket')
-				setIsConnected(true)
 				setConnectionStatus('connected')
 			}
 
@@ -86,12 +83,10 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 
 			ws.onclose = (event) => {
 				console.log('WebSocket connection closed:', event.code, event.reason)
-				setIsConnected(false)
 				setConnectionStatus('disconnected')
 
 				// Attempt to reconnect after a delay
 				if (event.code !== 1000) {
-					setConnectionStatus('reconnecting')
 					reconnectTimeoutRef.current = window.setTimeout(() => {
 						console.log('Attempting to reconnect...')
 						connect()
@@ -139,11 +134,7 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 			isPageVisibleRef.current = !document.hidden
 
 			// If page becomes visible and we're disconnected, try to reconnect
-			if (
-				isPageVisibleRef.current &&
-				!isConnected &&
-				connectionStatus === 'disconnected'
-			) {
+			if (isPageVisibleRef.current && connectionStatus === 'disconnected') {
 				console.log('Page became visible, attempting to reconnect...')
 				connect()
 			}
@@ -154,7 +145,7 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 		return () => {
 			document.removeEventListener('visibilitychange', handleVisibilityChange)
 		}
-	}, [isConnected, connectionStatus, connect])
+	}, [connectionStatus, connect])
 
 	// Connect on mount
 	useEffect(() => {
@@ -168,7 +159,6 @@ export function CarUpdatesProvider({ children }: CarUpdatesProviderProps) {
 
 	const contextValue: CarUpdatesContextType = {
 		subscribe,
-		isConnected,
 		connectionStatus,
 	}
 
