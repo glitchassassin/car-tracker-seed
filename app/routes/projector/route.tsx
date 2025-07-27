@@ -1,6 +1,4 @@
-import { Link } from 'react-router'
 import { useRevalidateOnCarUpdates } from '../../hooks/useRevalidateOnCarUpdates'
-import { createCarDB } from '../../lib/car-db'
 import type { Car } from '../../lib/car-db'
 import type { Route } from './+types/route'
 
