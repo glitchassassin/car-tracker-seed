@@ -413,6 +413,45 @@ export class CarDB {
 	}
 
 	/**
+	 * Update car details (make, model, color, license plate)
+	 */
+	async updateCarDetails(
+		id: number,
+		updates: {
+			make: string
+			model: string
+			color: CarColor
+			license_plate: string
+		},
+	): Promise<Car | null> {
+		try {
+			const result = await this.db
+				.prepare(
+					'UPDATE cars SET make = ?, model = ?, color = ?, license_plate = ? WHERE id = ?',
+				)
+				.bind(
+					updates.make,
+					updates.model,
+					updates.color,
+					updates.license_plate,
+					id,
+				)
+				.run()
+
+			// Check if the car update was successful
+			if (result.meta.changes === 0) {
+				return null // Car not found
+			}
+
+			// Get the updated car
+			return await this.getCarById(id)
+		} catch (error) {
+			console.error('Error updating car details:', error)
+			throw new Error(`Failed to update car ${id} details`)
+		}
+	}
+
+	/**
 	 * Validate car data
 	 */
 	validateCarData(car: Partial<CarInput>): string[] {

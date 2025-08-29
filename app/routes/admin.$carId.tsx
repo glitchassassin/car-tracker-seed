@@ -259,12 +259,20 @@ export default function AdminCarDetail({ loaderData }: Route.ComponentProps) {
 						>
 							Vehicle
 						</h2>
-						<div
-							className={`inline-flex items-center rounded-full px-4 py-2 ${statusInfo.bgColor}`}
-						>
-							<span className={`text-sm font-semibold ${statusInfo.color}`}>
-								{statusInfo.title}
-							</span>
+						<div className="flex items-center space-x-3">
+							<Link
+								to={`/admin/${car.id}/edit`}
+								className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-200"
+							>
+								Edit Details
+							</Link>
+							<div
+								className={`inline-flex items-center rounded-full px-4 py-2 ${statusInfo.bgColor}`}
+							>
+								<span className={`text-sm font-semibold ${statusInfo.color}`}>
+									{statusInfo.title}
+								</span>
+							</div>
 						</div>
 					</div>
 
