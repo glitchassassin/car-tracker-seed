@@ -119,12 +119,18 @@ export default function Admin({
 			<div className="mx-auto max-w-7xl space-y-6">
 				{/* Header */}
 				<header className="text-center">
-					<div className="mb-4 flex justify-start">
+					<div className="mb-4 flex justify-between">
 						<Link
 							to="/"
 							className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
 						>
 							← Back to Home
+						</Link>
+						<Link
+							to="/admin/new"
+							className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+						>
+							+ New Car
 						</Link>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">

@@ -7,6 +7,7 @@ const routes: RouteConfig = [
 	route('pickup', 'routes/pickup.tsx'),
 	route('projector', 'routes/projector.tsx'),
 	route('admin', 'routes/admin.tsx'),
+	route('admin/new', 'routes/admin.new.tsx'),
 	route('admin/:carId', 'routes/admin.$carId.tsx'),
 	route('admin/:carId/edit', 'routes/admin.$carId.edit.tsx'),
 	route(':path/:carId', 'routes/status.$carId.tsx'),

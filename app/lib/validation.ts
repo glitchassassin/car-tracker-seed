@@ -90,6 +90,58 @@ export const carEditSchema = z.object({
 		}),
 })
 
+// Schema for new car registration validation
+export const carCreateSchema = z.object({
+	id: z
+		.string()
+		.min(1, 'Car ID is required')
+		.transform((val) => {
+			const parsed = parseInt(val.trim(), 10)
+			if (isNaN(parsed)) {
+				throw new Error('Car ID must be a valid number')
+			}
+			if (parsed <= 0) {
+				throw new Error('Car ID must be a positive number')
+			}
+			return parsed
+		}),
+	make: z
+		.string()
+		.min(1, 'Make is required')
+		.transform((val) => val.trim())
+		.refine((val) => val.length > 0, {
+			message: 'Make cannot be empty',
+		}),
+	model: z
+		.string()
+		.min(1, 'Model is required')
+		.transform((val) => val.trim())
+		.refine((val) => val.length > 0, {
+			message: 'Model cannot be empty',
+		}),
+	color: z.enum([
+		'white',
+		'black',
+		'gray',
+		'silver',
+		'blue',
+		'red',
+		'green',
+		'brown',
+		'orange',
+		'gold',
+		'purple',
+		'yellow',
+	]),
+	license_plate: z
+		.string()
+		.min(1, 'License plate is required')
+		.transform((val) => val.trim())
+		.refine((val) => val.length > 0, {
+			message: 'License plate cannot be empty',
+		}),
+})
+
 // Schema for SQL query validation (development only)
 export const sqlQuerySchema = z.object({
 	query: z
@@ -108,6 +160,7 @@ export type CarSearchFormData = z.infer<typeof carSearchSchema>
 export type CarIdFormData = z.infer<typeof carIdSchema>
 export type StatusActionFormData = z.infer<typeof statusActionSchema>
 export type CarEditFormData = z.infer<typeof carEditSchema>
+export type CarCreateFormData = z.infer<typeof carCreateSchema>
 export type SqlQueryFormData = z.infer<typeof sqlQuerySchema>
 export type CarLookupFormData = z.infer<typeof carLookupSchema>
 export type CarStatusUpdate = z.infer<typeof carStatusUpdateSchema>

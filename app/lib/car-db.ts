@@ -413,6 +413,60 @@ export class CarDB {
 	}
 
 	/**
+	 * Create a new car with manual ID entry
+	 */
+	async createCar(carData: {
+		id: number
+		make: string
+		model: string
+		color: CarColor
+		license_plate: string
+	}): Promise<Car> {
+		try {
+			// Check if a car with this ID already exists
+			const existingCar = await this.getCarById(carData.id)
+			if (existingCar) {
+				throw new Error(`Car with ID ${carData.id} already exists`)
+			}
+
+			const currentTime = new Date().toISOString()
+
+			const result = await this.db
+				.prepare(
+					'INSERT INTO cars (id, make, model, color, license_plate, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+				)
+				.bind(
+					carData.id,
+					carData.make,
+					carData.model,
+					carData.color,
+					carData.license_plate,
+					'PRE_ARRIVAL',
+					currentTime,
+				)
+				.run()
+
+			if (result.meta.changes === 0) {
+				throw new Error('Failed to create car')
+			}
+
+			// Get the created car
+			const createdCar = await this.getCarById(carData.id)
+			if (!createdCar) {
+				throw new Error('Failed to retrieve created car')
+			}
+
+			return createdCar
+		} catch (error) {
+			console.error('Error creating car:', error)
+			if (error instanceof Error && error.message.includes('already exists')) {
+				throw error // Re-throw the specific error for ID conflicts
+			}
+			throw new Error(`Failed to create car with ID ${carData.id}`)
+		}
+	}
+
+	/**
 	 * Update car details (make, model, color, license plate)
 	 */
 	async updateCarDetails(
