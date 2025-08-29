@@ -11,6 +11,7 @@ import { ClientOnly } from 'remix-utils/client-only'
 import type { Route } from './+types/root'
 import { ConnectionStatus } from './components/ConnectionStatus'
 import { CarUpdatesProvider } from './contexts/CarUpdatesContext'
+import { useWakeLock } from './hooks/useWakeLock'
 import './app.css'
 
 export const links: Route.LinksFunction = () => [
@@ -45,6 +46,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+	// Keep screen awake on tablets and mobile devices
+	useWakeLock()
+
 	return (
 		<CarUpdatesProvider>
 			<ClientOnly>{() => <ConnectionStatus />}</ClientOnly>
