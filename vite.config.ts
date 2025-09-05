@@ -11,4 +11,9 @@ export default defineConfig({
 		reactRouter(),
 		tsconfigPaths(),
 	],
+	build: {
+		rollupOptions: {
+			external: ['cloudflare:workers'],
+		},
+	},
 })

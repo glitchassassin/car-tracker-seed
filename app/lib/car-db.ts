@@ -1,3 +1,5 @@
+import { getCarUpdatesStub } from './car-updates'
+
 /**
  * Car Database Access Layer
  * Provides type-safe operations for car data management
@@ -225,7 +227,6 @@ export class CarDB {
 	): Promise<void> {
 		if (!this.env?.CAR_UPDATES) return
 
-		const { getCarUpdatesStub } = await import('./car-updates')
 		const stub = getCarUpdatesStub(this.env as any)
 
 		const update = {
