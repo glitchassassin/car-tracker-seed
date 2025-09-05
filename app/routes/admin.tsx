@@ -17,7 +17,7 @@ export function meta({}: Route.MetaArgs) {
 	]
 }
 
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({ context, request }: Route.LoaderArgs) {
 	// Get all cars and organize them by status
 	const allCars = await context.carDB.getAllCars()
 
@@ -34,7 +34,20 @@ export async function loader({ context }: Route.LoaderArgs) {
 		carsByStatus[car.status].push(car)
 	})
 
-	return { carsByStatus }
+	// Check for import success message
+	const url = new URL(request.url)
+	const imported = url.searchParams.get('imported')
+	const mode = url.searchParams.get('mode')
+
+	let importSuccess = null
+	if (imported && mode) {
+		importSuccess = {
+			count: parseInt(imported, 10),
+			mode,
+		}
+	}
+
+	return { carsByStatus, importSuccess }
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
@@ -108,7 +121,7 @@ function getStatusDisplayInfo(status: CarStatus) {
 }
 
 export default function Admin({
-	loaderData: { carsByStatus },
+	loaderData: { carsByStatus, importSuccess },
 	actionData,
 }: Route.ComponentProps) {
 	// Listen for real-time updates on all status changes
@@ -117,6 +130,38 @@ export default function Admin({
 	return (
 		<main className="min-h-screen p-4">
 			<div className="mx-auto max-w-7xl space-y-6">
+				{/* Import Success Message */}
+				{importSuccess && (
+					<div className="rounded-lg bg-green-50 p-4">
+						<div className="flex">
+							<div className="flex-shrink-0">
+								<svg
+									className="h-5 w-5 text-green-400"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fillRule="evenodd"
+										d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+										clipRule="evenodd"
+									/>
+								</svg>
+							</div>
+							<div className="ml-3">
+								<h3 className="text-sm font-medium text-green-800">
+									Import Successful!
+								</h3>
+								<div className="mt-2 text-sm text-green-700">
+									<p>
+										Successfully imported {importSuccess.count} cars using{' '}
+										<strong>{importSuccess.mode}</strong> mode.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
+
 				{/* Header */}
 				<header className="text-center">
 					<div className="mb-4 flex justify-between">
@@ -126,12 +171,20 @@ export default function Admin({
 						>
 							← Back to Home
 						</Link>
-						<Link
-							to="/admin/new"
-							className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-						>
-							+ New Car
-						</Link>
+						<div className="flex space-x-3">
+							<Link
+								to="/admin/upload"
+								className="inline-flex items-center rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+							>
+								📄 Import CSV
+							</Link>
+							<Link
+								to="/admin/new"
+								className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+							>
+								+ New Car
+							</Link>
+						</div>
 					</div>
 					<h1 className="mb-2 text-3xl font-bold text-gray-900">
 						Admin Dashboard

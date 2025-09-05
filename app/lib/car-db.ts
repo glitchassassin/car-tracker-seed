@@ -506,6 +506,140 @@ export class CarDB {
 	}
 
 	/**
+	 * Import cars in bulk with transaction support
+	 */
+	async importCars(
+		cars: CarInput[],
+		mode: 'append' | 'replace' = 'append',
+	): Promise<{ success: boolean; imported: number; errors: string[] }> {
+		const errors: string[] = []
+		const currentTime = new Date().toISOString()
+
+		try {
+			// Validate all cars before proceeding
+			const validatedCars: CarInput[] = []
+			for (let i = 0; i < cars.length; i++) {
+				const car = cars[i]
+				const carErrors = this.validateCarData(car)
+				if (carErrors.length > 0) {
+					errors.push(`Row ${i + 1}: ${carErrors.join(', ')}`)
+				} else {
+					validatedCars.push(car)
+				}
+			}
+
+			console.log('carInput', cars)
+
+			if (errors.length > 0) {
+				return { success: false, imported: 0, errors }
+			}
+
+			// Check for ID conflicts if in append mode
+			if (mode === 'append') {
+				const conflictingIds: number[] = []
+				for (const car of validatedCars) {
+					const existingCar = await this.getCarById(car.id)
+					if (existingCar) {
+						conflictingIds.push(car.id)
+					}
+				}
+				if (conflictingIds.length > 0) {
+					errors.push(
+						`Cars with IDs ${conflictingIds.join(', ')} already exist. Choose 'replace' mode or use different IDs.`,
+					)
+					return { success: false, imported: 0, errors }
+				}
+			}
+
+			// Prepare batch statements
+			const statements: D1PreparedStatement[] = []
+
+			// If replace mode, delete all existing cars first
+			if (mode === 'replace') {
+				statements.push(this.db.prepare('DELETE FROM cars'))
+				statements.push(this.db.prepare('DELETE FROM status_history'))
+			}
+
+			// Add insert statements for each car
+			for (const car of validatedCars) {
+				statements.push(
+					this.db
+						.prepare(
+							'INSERT OR REPLACE INTO cars (id, make, model, color, license_plate, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+						)
+						.bind(
+							car.id,
+							car.make,
+							car.model,
+							car.color,
+							car.license_plate,
+							'PRE_ARRIVAL',
+							currentTime,
+						),
+				)
+			}
+
+			// Execute all statements in a transaction
+			const results = await this.db.batch(statements)
+
+			// Check if all operations succeeded
+			const startIdx = mode === 'replace' ? 2 : 0 // Skip delete statements in replace mode
+			let imported = 0
+			for (let i = startIdx; i < results.length; i++) {
+				if (results[i].meta.changes > 0) {
+					imported++
+				}
+			}
+
+			return { success: true, imported, errors: [] }
+		} catch (error) {
+			console.error('Error importing cars:', error)
+			const errorMessage =
+				error instanceof Error ? error.message : 'Unknown error occurred'
+			return {
+				success: false,
+				imported: 0,
+				errors: [`Import failed: ${errorMessage}`],
+			}
+		}
+	}
+
+	/**
+	 * Delete all cars (for replace mode)
+	 */
+	async deleteAllCars(): Promise<void> {
+		try {
+			await this.db.batch([
+				this.db.prepare('DELETE FROM cars'),
+				this.db.prepare('DELETE FROM status_history'),
+			])
+		} catch (error) {
+			console.error('Error deleting all cars:', error)
+			throw new Error('Failed to delete all cars')
+		}
+	}
+
+	/**
+	 * Check if cars with given IDs exist
+	 */
+	async checkCarsExist(ids: number[]): Promise<number[]> {
+		if (ids.length === 0) return []
+
+		try {
+			const placeholders = ids.map(() => '?').join(',')
+			const result = await this.db
+				.prepare(`SELECT id FROM cars WHERE id IN (${placeholders})`)
+				.bind(...ids)
+				.all<{ id: number }>()
+
+			return result.results?.map((row) => row.id) || []
+		} catch (error) {
+			console.error('Error checking car existence:', error)
+			throw new Error('Failed to check car existence')
+		}
+	}
+
+	/**
 	 * Validate car data
 	 */
 	validateCarData(car: Partial<CarInput>): string[] {
