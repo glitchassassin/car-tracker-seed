@@ -1,6 +1,6 @@
 import { parseWithZod } from '@conform-to/zod'
 import { useMemo } from 'react'
-import { Link, redirect, useLocation } from 'react-router'
+import { Form, Link, redirect, useLocation } from 'react-router'
 import { useRevalidateOnCarUpdates } from '../hooks/useRevalidateOnCarUpdates'
 import { statusActionSchema } from '../lib/validation'
 import type { Route } from './+types/status.$carId'
@@ -311,7 +311,7 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 
 				{/* Action Buttons */}
 				<section className="space-y-4">
-					<form method="post" className="space-y-4">
+					<Form method="post" className="space-y-4">
 						{/* Primary Action */}
 						{statusActions.primary && (
 							<button
@@ -340,7 +340,7 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 								))}
 							</div>
 						)}
-					</form>
+					</Form>
 				</section>
 			</div>
 		</main>

@@ -1,5 +1,5 @@
 import { parseWithZod } from '@conform-to/zod'
-import { Link, redirect } from 'react-router'
+import { Form, Link, redirect } from 'react-router'
 import { useRevalidateOnCarUpdates } from '../hooks/useRevalidateOnCarUpdates'
 import { statusActionSchema } from '../lib/validation'
 import type { Route } from './+types/admin.$carId'
@@ -288,7 +288,7 @@ export default function AdminCarDetail({ loaderData }: Route.ComponentProps) {
 
 				{/* Action Buttons */}
 				<section className="space-y-4">
-					<form method="post" className="space-y-4">
+					<Form method="post" className="space-y-4">
 						{/* Primary Action */}
 						{statusActions.primary && (
 							<button
@@ -317,7 +317,7 @@ export default function AdminCarDetail({ loaderData }: Route.ComponentProps) {
 								))}
 							</div>
 						)}
-					</form>
+					</Form>
 				</section>
 
 				{/* Status History */}

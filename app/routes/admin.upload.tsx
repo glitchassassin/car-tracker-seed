@@ -1,6 +1,6 @@
 import { parseWithZod } from '@conform-to/zod'
 import { parse } from 'csv-parse/browser/esm'
-import { Link, redirect } from 'react-router'
+import { Form, Link, redirect } from 'react-router'
 import type { Route } from './+types/admin.upload'
 import type { CarInput } from '~/lib/car-db'
 import { carImportSchema, csvRowSchema } from '~/lib/validation'
@@ -341,7 +341,7 @@ export default function AdminImport({ actionData }: Route.ComponentProps) {
 
 				{/* Import Form */}
 				<div className="rounded-lg bg-white p-6 shadow-lg">
-					<form
+					<Form
 						method="post"
 						encType="multipart/form-data"
 						className="space-y-6"
@@ -675,7 +675,7 @@ export default function AdminImport({ actionData }: Route.ComponentProps) {
 								Import Cars
 							</button>
 						</div>
-					</form>
+					</Form>
 				</div>
 
 				{/* Sample Download */}
