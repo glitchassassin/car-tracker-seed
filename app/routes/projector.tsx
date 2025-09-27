@@ -29,7 +29,7 @@ export default function Projector({ loaderData }: Route.ComponentProps) {
 	return (
 		<main className="min-h-screen bg-gray-900 p-8">
 			<div className="mx-auto max-w-6xl">
-				<header className="mb-8 text-center">
+				<header className="my-8 text-center">
 					<h1 className="mb-2 text-5xl font-bold text-white">Car Status</h1>
 				</header>
 

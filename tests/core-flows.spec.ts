@@ -50,8 +50,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				page.getByTestId(`car-${carId}`).getByText('Civic'),
 			).toBeVisible()
 
-			// Click "Move to Registered" button
-			await page.getByRole('button', { name: /move to registered/i }).click()
+			// Click "Move to Staging" button
+			await page.getByRole('button', { name: /move to staging/i }).click()
 
 			// Verify user is automatically redirected to /registration
 			await expect(page).toHaveURL('/registration')
@@ -67,14 +67,11 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 
 			// Select the created car from queue to navigate to details page
 			await page.getByTestId(`car-${carId}`).click()
+			await expect(page.getByText(`Car #${carId} Details`)).toBeVisible()
 
 			// Verify car details display correctly - use the specific car's test ID to avoid conflicts
-			await expect(
-				page.getByTestId(`car-${carId}`).getByText('Honda'),
-			).toBeVisible()
-			await expect(
-				page.getByTestId(`car-${carId}`).getByText('Civic'),
-			).toBeVisible()
+			await expect(page.getByText('Honda')).toBeVisible()
+			await expect(page.getByText('Civic')).toBeVisible()
 
 			// Click "Move to On Deck" button
 			await page.getByRole('button', { name: /move to on deck/i }).click()
@@ -93,14 +90,11 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 
 			// Select the created car from queue to navigate to details page
 			await page.getByTestId(`car-${carId}`).click()
+			await expect(page.getByText(`Car #${carId} Details`)).toBeVisible()
 
 			// Verify car details display correctly - use the specific car's test ID to avoid conflicts
-			await expect(
-				page.getByTestId(`car-${carId}`).getByText('Honda'),
-			).toBeVisible()
-			await expect(
-				page.getByTestId(`car-${carId}`).getByText('Civic'),
-			).toBeVisible()
+			await expect(page.getByText('Honda')).toBeVisible()
+			await expect(page.getByText('Civic')).toBeVisible()
 
 			// Click "Move to Ready for Pickup" button
 			await page
@@ -121,17 +115,14 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 
 			// Select the created car from queue to navigate to details page
 			await page.getByTestId(`car-${carId}`).click()
+			await expect(page.getByText(`Car #${carId} Details`)).toBeVisible()
 
 			// Verify car details display correctly - use the specific car's test ID to avoid conflicts
-			await expect(
-				page.getByTestId(`car-${carId}`).getByText('Honda'),
-			).toBeVisible()
-			await expect(
-				page.getByTestId(`car-${carId}`).getByText('Civic'),
-			).toBeVisible()
+			await expect(page.getByText('Honda')).toBeVisible()
+			await expect(page.getByText('Civic')).toBeVisible()
 
-			// Click "Mark as Picked Up" button
-			await page.getByRole('button', { name: /mark as picked up/i }).click()
+			// Click "Move to Picked Up" button
+			await page.getByRole('button', { name: /move to picked up/i }).click()
 
 			// Verify user is automatically redirected to /pickup
 			await expect(page).toHaveURL('/pickup')
@@ -183,8 +174,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
 
-			// Click "Move to Registered" button
-			await page.getByRole('button', { name: /move to registered/i }).click()
+			// Click "Move to Staging" button
+			await page.getByRole('button', { name: /move to staging/i }).click()
 
 			// Verify user is automatically redirected to /registration
 			await expect(page).toHaveURL('/registration')
@@ -260,8 +251,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Toyota')).toBeVisible()
 			await expect(page.getByText('Camry')).toBeVisible()
 
-			// Click "Mark as Picked Up" button
-			await page.getByRole('button', { name: /mark as picked up/i }).click()
+			// Click "Move to Picked Up" button
+			await page.getByRole('button', { name: /move to picked up/i }).click()
 
 			// Verify user is automatically redirected to /pickup
 			await expect(page).toHaveURL('/pickup')
@@ -315,8 +306,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('X3')).toBeVisible()
 			await expect(page.getByText(licensePlate)).toBeVisible()
 
-			// Click "Move to Registered" button
-			await page.getByRole('button', { name: /move to registered/i }).click()
+			// Click "Move to Staging" button
+			await page.getByRole('button', { name: /move to staging/i }).click()
 
 			// Verify user is automatically redirected to /registration
 			await expect(page).toHaveURL('/registration')
@@ -392,8 +383,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('BMW')).toBeVisible()
 			await expect(page.getByText('X3')).toBeVisible()
 
-			// Click "Mark as Picked Up" button
-			await page.getByRole('button', { name: /mark as picked up/i }).click()
+			// Click "Move to Picked Up" button
+			await page.getByRole('button', { name: /move to picked up/i }).click()
 
 			// Verify user is automatically redirected to /pickup
 			await expect(page).toHaveURL('/pickup')
@@ -460,8 +451,8 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Ford')).toBeVisible()
 			await expect(page.getByText('Focus')).toBeVisible()
 
-			// Click "Skip to On Deck" button (since car is in PRE_ARRIVAL status)
-			await page.getByRole('button', { name: /skip to on deck/i }).click()
+			// Click "Move to On Deck" button (since car is in PRE_ARRIVAL status)
+			await page.getByRole('button', { name: /move to on deck/i }).click()
 
 			// Verify user is automatically redirected to /registration
 			await expect(page).toHaveURL('/registration')
@@ -486,9 +477,9 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 			await expect(page.getByText('Nissan')).toBeVisible()
 			await expect(page.getByText('Altima')).toBeVisible()
 
-			// Click "Skip to Ready for Pickup" button (since car is in PRE_ARRIVAL status)
+			// Click "Move to Ready for Pickup" button (since car is in PRE_ARRIVAL status)
 			await page
-				.getByRole('button', { name: /skip to ready for pickup/i })
+				.getByRole('button', { name: /move to ready for pickup/i })
 				.click()
 
 			// Verify user is automatically redirected to /pickup
@@ -527,22 +518,22 @@ test.describe('Phase 2: Core Status Tracking & Volunteer Interfaces', () => {
 				await expect(page.getByText('Hyundai')).toBeVisible()
 				await expect(page.getByText('Elantra')).toBeVisible()
 
-				// Click "Skip to Ready for Pickup" button first (since car is in PRE_ARRIVAL status)
+				// Click "Move to Ready for Pickup" button first (since car is in PRE_ARRIVAL status)
 				await page
-					.getByRole('button', { name: /skip to ready for pickup/i })
+					.getByRole('button', { name: /move to ready for pickup/i })
 					.click()
 
 				// Verify user is automatically redirected to /pickup
 				await expect(page).toHaveURL('/pickup')
 
-				// Now search again and mark as picked up
+				// Now search again and Move to picked up
 				await page
 					.getByPlaceholder(/enter car id or license plate/i)
 					.fill(carId3.toString())
 				await page.getByRole('button', { name: /search/i }).click()
 
-				// Click "Mark as Picked Up" button
-				await page.getByRole('button', { name: /mark as picked up/i }).click()
+				// Click "Move to Picked Up" button
+				await page.getByRole('button', { name: /move to picked up/i }).click()
 
 				// Verify user is automatically redirected to /pickup
 				await expect(page).toHaveURL('/pickup')

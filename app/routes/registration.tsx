@@ -100,8 +100,8 @@ export default function Registration({
 							Pre-Arrival ({preArrivalCars.length})
 						</h2>
 						<p className="text-sm text-gray-600">
-							Update car to Registered when it has arrived and completed
-							registration
+							When registration is complete, update car to On Deck (or Staging,
+							if all bays are currently full)
 						</p>
 
 						{preArrivalCars.length === 0 ? (
@@ -124,7 +124,7 @@ export default function Registration({
 					{/* Registered Column */}
 					<section className="space-y-4">
 						<h2 className="text-xl font-semibold text-gray-900">
-							Registered ({registeredCars.length})
+							Staging ({registeredCars.length})
 						</h2>
 						<p className="text-sm text-gray-600">
 							Update car to On Deck when it is entering the floor for service

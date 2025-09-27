@@ -58,118 +58,52 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
 // Helper function to get status-specific actions
 function getStatusActions(carStatus: string) {
+	const statuses: { targetStatus: string; label: string; primary?: boolean }[] =
+		[
+			{
+				targetStatus: 'REGISTERED',
+				label: 'Move to Staging',
+			},
+			{
+				targetStatus: 'ON_DECK',
+				label: 'Move to On Deck',
+			},
+			{
+				targetStatus: 'DONE',
+				label: 'Move to Ready for Pickup',
+			},
+			{
+				targetStatus: 'PICKED_UP',
+				label: 'Move to Picked Up',
+			},
+		]
 	switch (carStatus) {
 		case 'PRE_ARRIVAL':
-			return {
-				primary: {
-					targetStatus: 'REGISTERED',
-					label: 'Move to Registered',
-				},
-				secondary: [
-					{
-						targetStatus: 'ON_DECK',
-						label: 'Skip to On Deck',
-					},
-					{
-						targetStatus: 'DONE',
-						label: 'Skip to Ready for Pickup',
-					},
-					{
-						targetStatus: 'PICKED_UP',
-						label: 'Skip to Picked Up',
-					},
-				],
-			}
+			return statuses.map((status) => ({
+				...status,
+				primary:
+					status.targetStatus === 'REGISTERED' ||
+					status.targetStatus === 'ON_DECK',
+			}))
 		case 'REGISTERED':
-			return {
-				primary: {
-					targetStatus: 'ON_DECK',
-					label: 'Move to On Deck',
-				},
-				secondary: [
-					{
-						targetStatus: 'PRE_ARRIVAL',
-						label: 'Return to Pre-Arrival',
-					},
-					{
-						targetStatus: 'DONE',
-						label: 'Skip to Ready for Pickup',
-					},
-					{
-						targetStatus: 'PICKED_UP',
-						label: 'Skip to Picked Up',
-					},
-				],
-			}
+			return statuses.map((status) => ({
+				...status,
+				primary: status.targetStatus === 'ON_DECK',
+			}))
 		case 'ON_DECK':
-			return {
-				primary: {
-					targetStatus: 'DONE',
-					label: 'Move to Ready for Pickup',
-				},
-				secondary: [
-					{
-						targetStatus: 'PRE_ARRIVAL',
-						label: 'Return to Pre-Arrival',
-					},
-					{
-						targetStatus: 'REGISTERED',
-						label: 'Return to Registered',
-					},
-					{
-						targetStatus: 'PICKED_UP',
-						label: 'Skip to Picked Up',
-					},
-				],
-			}
+			return statuses.map((status) => ({
+				...status,
+				primary: status.targetStatus === 'DONE',
+			}))
 		case 'DONE':
-			return {
-				primary: {
-					targetStatus: 'PICKED_UP',
-					label: 'Mark as Picked Up',
-				},
-				secondary: [
-					{
-						targetStatus: 'PRE_ARRIVAL',
-						label: 'Return to Pre-Arrival',
-					},
-					{
-						targetStatus: 'REGISTERED',
-						label: 'Return to Registered',
-					},
-					{
-						targetStatus: 'ON_DECK',
-						label: 'Return to On Deck',
-					},
-				],
-			}
+			return statuses.map((status) => ({
+				...status,
+				primary: status.targetStatus === 'PICKED_UP',
+			}))
 		case 'PICKED_UP':
-			return {
-				primary: null, // No primary action for PICKED_UP status
-				secondary: [
-					{
-						targetStatus: 'PRE_ARRIVAL',
-						label: 'Return to Pre-Arrival',
-					},
-					{
-						targetStatus: 'REGISTERED',
-						label: 'Return to Registered',
-					},
-					{
-						targetStatus: 'ON_DECK',
-						label: 'Return to On Deck',
-					},
-					{
-						targetStatus: 'DONE',
-						label: 'Return to Ready for Pickup',
-					},
-				],
-			}
+			return statuses
 		default:
-			return {
-				primary: null,
-				secondary: [],
-			}
+			return statuses
 	}
 }
 
@@ -185,8 +119,8 @@ function getStatusDisplayInfo(status: string) {
 			}
 		case 'REGISTERED':
 			return {
-				title: 'Registered',
-				description: 'Car has arrived and been registered',
+				title: 'Staging',
+				description: 'Car is staged waiting for service',
 				color: 'text-blue-600',
 				bgColor: 'bg-blue-100',
 			}
@@ -263,6 +197,11 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 		}
 	}, [location.pathname])
 
+	const primaryClasses =
+		'w-full cursor-pointer rounded-lg bg-blue-600 p-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700'
+	const secondaryClasses =
+		'w-full cursor-pointer rounded-lg bg-gray-100 p-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200'
+
 	return (
 		<main className="min-h-screen p-4">
 			<div className="mx-auto max-w-2xl space-y-8">
@@ -312,28 +251,17 @@ export default function StatusDetail({ loaderData }: Route.ComponentProps) {
 				{/* Action Buttons */}
 				<section className="space-y-4">
 					<Form method="post" className="space-y-4">
-						{/* Primary Action */}
-						{statusActions.primary && (
-							<button
-								type="submit"
-								name="targetStatus"
-								value={statusActions.primary.targetStatus}
-								className="w-full cursor-pointer rounded-lg bg-blue-600 p-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700"
-							>
-								{statusActions.primary.label}
-							</button>
-						)}
-
-						{/* Secondary Actions */}
-						{statusActions.secondary.length > 0 && (
+						{statusActions.length > 0 && (
 							<div className="space-y-2">
-								{statusActions.secondary.map((action) => (
+								{statusActions.map((action) => (
 									<button
 										key={action.targetStatus}
 										type="submit"
 										name="targetStatus"
 										value={action.targetStatus}
-										className="w-full cursor-pointer rounded-lg bg-gray-100 p-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200"
+										className={
+											action.primary ? primaryClasses : secondaryClasses
+										}
 									>
 										{action.label}
 									</button>
