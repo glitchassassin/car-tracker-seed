@@ -2,7 +2,7 @@ import { parseWithZod } from '@conform-to/zod'
 import { Form, Link, redirect } from 'react-router'
 import { useRevalidateOnCarUpdates } from '../hooks/useRevalidateOnCarUpdates'
 import { statusActionSchema } from '../lib/validation'
-import type { Route } from './+types/admin.$carId'
+import type { Route } from './+types/admin.$carId._index'
 import { COLOR_CLASSES } from '~/components/CarCard'
 import type { CarStatus } from '~/lib/car-db'
 
