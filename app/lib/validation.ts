@@ -100,7 +100,7 @@ export const carCreateSchema = z.object({
 			if (isNaN(parsed)) {
 				throw new Error('Car ID must be a valid number')
 			}
-			if (parsed <= 0) {
+			if (parsed < 0) {
 				throw new Error('Car ID must be a positive number')
 			}
 			return parsed
@@ -181,7 +181,7 @@ export const csvRowSchema = z.object({
 			if (isNaN(parsed)) {
 				throw new Error('Car ID must be a valid number')
 			}
-			if (parsed <= 0) {
+			if (parsed < 0) {
 				throw new Error('Car ID must be a positive number')
 			}
 			return parsed

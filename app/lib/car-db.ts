@@ -646,7 +646,7 @@ export class CarDB {
 	validateCarData(car: Partial<CarInput>): string[] {
 		const errors: string[] = []
 
-		if (!car.id || typeof car.id !== 'number' || car.id <= 0) {
+		if (car.id === undefined || typeof car.id !== 'number' || car.id < 0) {
 			errors.push('ID must be a positive number')
 		}
 
