@@ -173,6 +173,12 @@ export default function Admin({
 						</Link>
 						<div className="flex space-x-3">
 							<Link
+								to="/admin/analytics"
+								className="inline-flex items-center rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-purple-700"
+							>
+								📊 Analytics
+							</Link>
+							<Link
 								to="/admin/upload"
 								className="inline-flex items-center rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
 							>

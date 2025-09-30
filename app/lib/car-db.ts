@@ -641,6 +641,90 @@ export class CarDB {
 	}
 
 	/**
+	 * Get status duration analytics
+	 * Calculates min, max, and average time spent in each status (excluding PRE_ARRIVAL and PICKED_UP)
+	 * Only considers the LAST transition to each status for each car to handle cases where cars were moved back
+	 */
+	async getStatusDurationAnalytics(): Promise<{
+		REGISTERED: { min: number; max: number; avg: number; count: number }
+		ON_DECK: { min: number; max: number; avg: number; count: number }
+		DONE: { min: number; max: number; avg: number; count: number }
+	}> {
+		try {
+			// Query to calculate duration statistics for each status
+			// We find the LAST time each car entered each status, then find the next status change
+			const query = `
+				WITH last_status_entries AS (
+					-- Find the last time each car entered each status
+					SELECT 
+						car_id,
+						new_status,
+						MAX(changed_at) as last_entry_time,
+						MAX(id) as last_entry_id
+					FROM status_history 
+					WHERE new_status IN ('REGISTERED', 'ON_DECK', 'DONE')
+					GROUP BY car_id, new_status
+				),
+				status_durations AS (
+					-- Calculate duration from last entry to next status change
+					SELECT 
+						lse.new_status,
+						(julianday(next_change.changed_at) - julianday(lse.last_entry_time)) * 24 * 60 as duration_minutes
+					FROM last_status_entries lse
+					JOIN status_history next_change ON lse.car_id = next_change.car_id 
+						AND next_change.id = (
+							-- Find the very next status change after the last entry
+							SELECT MIN(id) 
+							FROM status_history h3 
+							WHERE h3.car_id = lse.car_id 
+							AND h3.id > lse.last_entry_id
+							AND h3.new_status != lse.new_status
+						)
+					WHERE next_change.new_status != lse.new_status
+				)
+				SELECT 
+					new_status as status,
+					MIN(duration_minutes) as min_duration,
+					MAX(duration_minutes) as max_duration,
+					AVG(duration_minutes) as avg_duration,
+					COUNT(*) as count
+				FROM status_durations
+				GROUP BY new_status
+			`
+
+			const result = await this.db.prepare(query).all<{
+				status: 'REGISTERED' | 'ON_DECK' | 'DONE'
+				min_duration: number
+				max_duration: number
+				avg_duration: number
+				count: number
+			}>()
+
+			// Initialize default values
+			const analytics = {
+				REGISTERED: { min: 0, max: 0, avg: 0, count: 0 },
+				ON_DECK: { min: 0, max: 0, avg: 0, count: 0 },
+				DONE: { min: 0, max: 0, avg: 0, count: 0 },
+			}
+
+			// Populate with actual data
+			result.results?.forEach((row) => {
+				analytics[row.status] = {
+					min: Math.round(row.min_duration || 0),
+					max: Math.round(row.max_duration || 0),
+					avg: Math.round(row.avg_duration || 0),
+					count: row.count,
+				}
+			})
+
+			return analytics
+		} catch (error) {
+			console.error('Error fetching status duration analytics:', error)
+			throw new Error('Failed to fetch status duration analytics')
+		}
+	}
+
+	/**
 	 * Validate car data
 	 */
 	validateCarData(car: Partial<CarInput>): string[] {
