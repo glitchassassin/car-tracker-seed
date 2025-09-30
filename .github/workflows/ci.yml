@@ -126,27 +126,27 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Deploy to production
-        id: deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+      # - name: Deploy to production
+      #   id: deploy
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     command: deploy
 
-      - name: Apply migrations
-        id: migrate
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 migrations apply car-tracker-db --remote
+      # - name: Apply migrations
+      #   id: migrate
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     command: d1 migrations apply car-tracker-db --remote
 
-      - name: Output deployment success
-        run: |
-          echo "✅ Production deployment successful!"
+      # - name: Output deployment success
+      #   run: |
+      #     echo "✅ Production deployment successful!"
 
-          # Output to step summary
-          echo "## 🎉 Production Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **Status:** Successfully deployed to production" >> $GITHUB_STEP_SUMMARY
+      #     # Output to step summary
+      #     echo "## 🎉 Production Deployment" >> $GITHUB_STEP_SUMMARY
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+      #     echo "✅ **Status:** Successfully deployed to production" >> $GITHUB_STEP_SUMMARY
