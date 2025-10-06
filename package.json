@@ -30,7 +30,7 @@
     "@conform-to/zod": "^1.8.2",
     "@epic-web/config": "^1.21.1",
     "csv-parse": "^6.1.0",
-    "isbot": "^5.1.28",
+    "isbot": "^5.1.31",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.7.1",
