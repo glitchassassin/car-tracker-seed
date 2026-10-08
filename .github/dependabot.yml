@@ -30,8 +30,8 @@ updates:
         update-types:
           - 'patch'
 
-    # Auto-merge patch updates
-    open-pull-requests-limit: 10
+    # Maintenance mode: pause version-update PRs; security settings are unchanged.
+    open-pull-requests-limit: 0
     commit-message:
       prefix: 'chore'
       include: 'scope'
@@ -47,7 +47,7 @@ updates:
       github-actions:
         patterns:
           - '*'
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     commit-message:
       prefix: 'ci'
       include: 'scope'

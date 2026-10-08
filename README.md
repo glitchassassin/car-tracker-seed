@@ -1,5 +1,8 @@
 # Freedom Seed
 
+> **Maintenance mode:** This car-tracker-seed repository is in maintenance mode.
+> Active feature development and automated Dependabot version-update PRs are paused.
+
 An AI-ready starter template with React Router 7 on Cloudflare Workers. Includes
 sensible Cursor rules to speed development and establish guardrails.
 
